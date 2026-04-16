@@ -56,10 +56,16 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 5%;
-      background: rgba(255, 255, 255, 0.97);
+      background: transparent;
+      transition: all 0.4s ease;
+      border-bottom: none;
+    }
+
+    nav.scrolled {
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(12px);
       border-bottom: 2px solid var(--navy);
-      box-shadow: 0 2px 16px rgba(26, 35, 70, 0.10)
+      box-shadow: 0 2px 16px rgba(26, 35, 70, 0.10);
     }
 
     .nav-brand {
@@ -111,6 +117,75 @@
     .nav-cta:hover {
       background: var(--navy2);
       transform: translateY(-1px)
+    }
+
+    /* MOBILE BOTTOM NAV */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 5%;
+      right: 5%;
+      height: 64px;
+      background: rgba(26, 35, 70, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 32px;
+      z-index: 300;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 16px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    }
+
+    .bottom-nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.6);
+      transition: all 0.3s;
+    }
+
+    .bottom-nav-link.active,
+    .bottom-nav-link:hover {
+      color: #fff;
+    }
+
+    .bottom-nav-icon {
+      font-size: 1.2rem;
+    }
+
+    .bottom-nav-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .bottom-nav-cta {
+      background: #fff;
+      color: var(--navy);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.7rem;
+    }
+
+    @media (max-width: 991px) {
+      .nav-links, .nav-cta {
+        display: none !important;
+      }
+      .bottom-nav {
+        display: flex;
+      }
+      nav:not(.scrolled) .nav-brand img {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      }
+      .hero-content {
+        padding-top: 100px;
+      }
     }
 
     /* HERO */
@@ -2113,7 +2188,44 @@
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // Bottom nav active state
+    const bottomLinks = document.querySelectorAll('.bottom-nav-link');
+    bottomLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        bottomLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
   </script>
+
+  <div class="bottom-nav">
+    <a href="#hero" class="bottom-nav-link active">
+      <span class="bottom-nav-icon">🏘️</span>
+      <span class="bottom-nav-label">Home</span>
+    </a>
+    <a href="#residential" class="bottom-nav-link">
+      <span class="bottom-nav-icon">🏠</span>
+      <span class="bottom-nav-label">Resi</span>
+    </a>
+    <a href="#commercial" class="bottom-nav-link">
+      <span class="bottom-nav-icon">🏢</span>
+      <span class="bottom-nav-label">Comm</span>
+    </a>
+    <a href="#contact" class="bottom-nav-link bottom-nav-cta">
+      ENQUIRE
+    </a>
+  </div>
 </body>
 
 </html>
