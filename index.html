@@ -69,6 +69,13 @@
       box-shadow: 0 2px 16px rgba(26, 35, 70, 0.10);
     }
 
+    .nav-brand img {
+      height: 58px;
+      width: auto;
+      object-fit: contain;
+      mix-blend-mode: multiply; /* Fix for white background logo */
+    }
+
     .nav-brand {
       display: flex;
       align-items: center;
@@ -180,6 +187,10 @@
       }
       .bottom-nav {
         display: flex;
+      }
+      nav.scrolled {
+        background: rgba(255, 255, 255, 0.85); /* Less solid on mobile */
+        backdrop-filter: blur(16px);
       }
       nav:not(.scrolled) .nav-brand img {
         filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
@@ -642,24 +653,24 @@
 
     /* Right: about panel */
     .comm-about {
-      background: var(--navy);
+      background: #fff;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
 
     .comm-about-header {
-      background: linear-gradient(145deg, #1a2346, #2d3a6b);
+      background: #fff;
       padding: 32px 36px 24px;
       flex-shrink: 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid var(--border);
     }
 
     .comm-tag {
       font-size: 0.62rem;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.45);
+      color: var(--text-xs);
       margin-bottom: 10px;
     }
 
@@ -667,14 +678,14 @@
       font-family: 'Playfair Display', serif;
       font-size: clamp(1.6rem, 2.8vw, 2.2rem);
       font-weight: 600;
-      color: #fff;
+      color: var(--navy);
       line-height: 1.2;
       margin-bottom: 8px;
     }
 
     .comm-tagline {
       font-size: 0.78rem;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-s);
       letter-spacing: 0.06em;
       margin-bottom: 14px;
     }
@@ -682,12 +693,12 @@
     .comm-price-row {
       display: inline-block;
       padding: 6px 16px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: var(--light);
+      border: 1px solid var(--border);
       border-radius: 20px;
       font-size: 0.72rem;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--navy);
       letter-spacing: 0.06em;
     }
 
@@ -705,7 +716,7 @@
     }
 
     .comm-about-body::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--border);
       border-radius: 4px
     }
 
@@ -717,8 +728,8 @@
     }
 
     .comm-about-item {
-      background: rgba(255, 255, 255, 0.07);
-      border-left: 3px solid #4f8ef7;
+      background: var(--light);
+      border-left: 3px solid var(--navy);
       border-radius: 8px;
       padding: 14px 16px;
     }
@@ -728,14 +739,14 @@
       margin-bottom: 6px;
       font-size: 0.78rem;
       font-weight: 700;
-      color: #a8c0ff;
+      color: var(--navy);
       letter-spacing: 0.04em;
     }
 
     .comm-about-item p {
       font-size: 0.8rem;
       font-weight: 300;
-      color: rgba(255, 255, 255, 0.72);
+      color: var(--text-s);
       line-height: 1.8;
       margin: 0;
     }
