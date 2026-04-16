@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wilmer House — Quick | Stay | Relax</title>
+  <meta name="description" content="Wilmer House — Premium rental properties. Quick | Stay | Relax." />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --navy: #1a2346;
+      --navy2: #2d3a6b;
+      --accent: #3b5bdb;
+      --light: #f8f9fc;
+      --light2: #eef0f7;
+      --border: #e2e5ef;
+      --text: #1a1a2e;
+      --text-s: #5a6080;
+      --text-xs: #8890aa;
+      --white: #ffffff;
+      --shadow: 0 4px 24px rgba(26, 35, 70, 0.10);
+      --shadow-lg: 0 12px 48px rgba(26, 35, 70, 0.16);
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      overflow-x: hidden
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--navy);
+      box-shadow: 0 2px 16px rgba(26, 35, 70, 0.10)
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none
+    }
+
+    .nav-brand img {
+      height: 58px;
+      width: auto;
+      object-fit: contain
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none
+    }
+
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-s);
+      text-decoration: none;
+      transition: color .3s
+    }
+
+    .nav-links a:hover {
+      color: var(--navy)
+    }
+
+    .nav-cta {
+      padding: 10px 22px;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background .3s, transform .2s
+    }
+
+    .nav-cta:hover {
+      background: var(--navy2);
+      transform: translateY(-1px)
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 580px;
+      display: flex;
+      align-items: center;
+      overflow: hidden
+    }
+
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      animation: zoom 14s ease-out both
+    }
+
+    @keyframes zoom {
+      from {
+        transform: scale(1.06)
+      }
+
+      to {
+        transform: scale(1)
+      }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26, 35, 70, 0.82) 0%, rgba(26, 35, 70, 0.35) 55%, transparent 100%)
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      padding: 76px 5% 60px
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 20px;
+      backdrop-filter: blur(8px)
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 16px
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: #a8c0ff
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.8);
+      max-width: 480px;
+      line-height: 1.8;
+      margin-bottom: 36px
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap
+    }
+
+    .btn-primary {
+      padding: 14px 32px;
+      background: #fff;
+      color: var(--navy);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all .3s;
+      display: inline-block
+    }
+
+    .btn-primary:hover {
+      background: var(--light2);
+      transform: translateY(-2px)
+    }
+
+    .btn-outline {
+      padding: 14px 32px;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all .3s;
+      display: inline-block
+    }
+
+    .btn-outline:hover {
+      border-color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px)
+    }
+
+    .hero-stats {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: 2;
+      display: flex;
+      background: rgba(255, 255, 255, 0.97);
+      border-top-left-radius: 8px
+    }
+
+    .stat {
+      padding: 18px 32px;
+      text-align: center;
+      border-right: 1px solid var(--border)
+    }
+
+    .stat:last-child {
+      border-right: none
+    }
+
+    .stat-num {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--navy)
+    }
+
+    .stat-lbl {
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-xs);
+      margin-top: 2px
+    }
+
+    /* SECTION DIVIDER */
+    .sec-divider {
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--navy) 20%, #4f8ef7 50%, var(--navy) 80%, transparent);
+      border: none;
+      margin: 0
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 64px 5%
+    }
+
+    .sec-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px
+    }
+
+    .sec-tag-line {
+      width: 28px;
+      height: 2px;
+      background: var(--navy);
+      border-radius: 2px
+    }
+
+    .sec-tag-text {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--navy)
+    }
+
+    .sec-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 12px
+    }
+
+    .sec-title em {
+      font-style: italic;
+      color: var(--navy2)
+    }
+
+    .sec-desc {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--text-s);
+      line-height: 1.9;
+      max-width: 500px
+    }
+
+    .sec-header {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    /* RESIDENTIAL */
+    .residential-sec {
+      background: var(--light);
+      padding-top: 20px;
+      padding-bottom: 24px;
+    }
+
+    .prop-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px
+    }
+
+    .prop-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 2px solid var(--navy);
+      background-clip: padding-box;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform .35s, box-shadow .35s, border-color .35s;
+      position: relative
+    }
+
+    .prop-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      padding: 2px;
+      background: linear-gradient(135deg, var(--navy), #4f8ef7, var(--navy));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity .35s;
+      pointer-events: none;
+      z-index: 0
+    }
+
+    .prop-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg)
+    }
+
+    .prop-card:hover::before {
+      opacity: 1
+    }
+
+    .prop-img-wrap {
+      position: relative;
+      overflow: hidden
+    }
+
+    .prop-img {
+      width: 100%;
+      aspect-ratio: 3/1;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s
+    }
+
+    .prop-card:hover .prop-img {
+      transform: scale(1.05)
+    }
+
+    .prop-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 12px;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 20px;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase
+    }
+
+    .prop-gallery-hint {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(26, 35, 70, 0.85);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.62rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      letter-spacing: 0.08em;
+      backdrop-filter: blur(6px)
+    }
+
+    .prop-body {
+      padding: 6px 12px 8px;
+      position: relative;
+      z-index: 1
+    }
+
+    .prop-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 0
+    }
+
+    .prop-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0
+    }
+
+    .prop-loc {
+      font-size: 0.65rem;
+      color: var(--text-xs);
+      margin-bottom: 6px
+    }
+
+    .prop-specs {
+      display: flex;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      padding-top: 8px
+    }
+
+    .spec {
+      flex: 1;
+      text-align: center;
+      font-size: 0.62rem;
+      color: var(--text-s);
+      border-right: 1px solid var(--border);
+      padding: 3px 0
+    }
+
+    .spec:last-child {
+      border-right: none
+    }
+
+    .spec strong {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1px
+    }
+
+    /* COMMERCIAL — full-viewport split layout */
+    .commercial-sec {
+      background: #fff;
+      padding: 0 !important
+    }
+
+    .commercial-split {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      height: calc(100vh - 76px);
+      min-height: 520px;
+      max-height: 820px;
+    }
+
+    /* Left: image side */
+    .comm-img-side {
+      position: relative;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .comm-main-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .7s ease;
+    }
+
+    .comm-img-side:hover .comm-main-img {
+      transform: scale(1.04)
+    }
+
+    .comm-badge {
+      position: absolute;
+      top: 22px;
+      left: 22px;
+      padding: 6px 18px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--navy);
+      box-shadow: var(--shadow);
+    }
+
+    .comm-gallery-btn {
+      position: absolute;
+      bottom: 24px;
+      left: 22px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      background: rgba(255, 255, 255, 0.96);
+      border: none;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--navy);
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: all .25s;
+      letter-spacing: 0.04em;
+    }
+
+    .comm-gallery-btn:hover {
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(26, 35, 70, 0.2)
+    }
+
+    /* Right: about panel */
+    .comm-about {
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .comm-about-header {
+      background: linear-gradient(145deg, #1a2346, #2d3a6b);
+      padding: 32px 36px 24px;
+      flex-shrink: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .comm-tag {
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 10px;
+    }
+
+    .comm-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .comm-tagline {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+
+    .comm-price-row {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+      letter-spacing: 0.06em;
+    }
+
+    .comm-about-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .comm-about-body::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .comm-about-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px
+    }
+
+    .comm-about-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 22px
+    }
+
+    .comm-about-item {
+      background: rgba(255, 255, 255, 0.07);
+      border-left: 3px solid #4f8ef7;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .comm-about-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #a8c0ff;
+      letter-spacing: 0.04em;
+    }
+
+    .comm-about-item p {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .comm-facilities-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .comm-fac-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .comm-fac-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.15)
+    }
+
+    .comm-facilities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px
+    }
+
+    .comm-fac-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 13px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .comm-enquire-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      background: #fff;
+      color: var(--navy);
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all .3s;
+      align-self: flex-start;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      margin-top: auto;
+    }
+
+    .comm-enquire-btn:hover {
+      background: var(--light2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3)
+    }
+
+    @media(max-width:900px) {
+      .commercial-split {
+        grid-template-columns: 1fr;
+        height: auto;
+        max-height: none
+      }
+
+      .comm-img-side {
+        height: 260px
+      }
+
+      .comm-about-header {
+        padding: 24px 22px 18px
+      }
+
+      .comm-about-body {
+        padding: 18px 22px 24px
+      }
+    }
+
+    /* TESTIMONIALS */
+    .testi-sec {
+      background: var(--light)
+    }
+
+    .testi-scroll {
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch
+    }
+
+    .testi-scroll::-webkit-scrollbar {
+      height: 4px
+    }
+
+    .testi-scroll::-webkit-scrollbar-track {
+      background: var(--border);
+      border-radius: 4px
+    }
+
+    .testi-scroll::-webkit-scrollbar-thumb {
+      background: var(--navy2);
+      border-radius: 4px
+    }
+
+    .testi-card {
+      min-width: 300px;
+      max-width: 340px;
+      background: #fff;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      position: relative;
+      background-clip: padding-box
+    }
+
+    .testi-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      padding: 2px;
+      background: linear-gradient(135deg, var(--navy), #4f8ef7);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none
+    }
+
+    .testi-quote {
+      font-size: 2.5rem;
+      color: var(--navy2);
+      line-height: .8;
+      margin-bottom: 12px;
+      font-family: 'Playfair Display', serif;
+      opacity: .4
+    }
+
+    .testi-text {
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--text-s);
+      line-height: 1.9;
+      font-style: italic;
+      margin-bottom: 18px
+    }
+
+    .testi-stars {
+      color: #f59e0b;
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      margin-bottom: 14px
+    }
+
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px
+    }
+
+    .testi-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #fff;
+      flex-shrink: 0
+    }
+
+    .testi-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text)
+    }
+
+    .testi-role {
+      font-size: 0.7rem;
+      color: var(--text-xs);
+      margin-top: 2px
+    }
+
+    /* CONTACT */
+    .contact-sec {
+      background: #fff
+    }
+
+    .contact-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center
+    }
+
+    .contact-inner .sec-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem)
+    }
+
+    .contact-inner .sec-desc {
+      margin: 0 auto 48px;
+      max-width: 480px
+    }
+
+    .contact-btns {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap
+    }
+
+    .contact-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 36px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all .3s;
+      min-width: 220px
+    }
+
+    .btn-email {
+      background: var(--navy);
+      color: #fff
+    }
+
+    .btn-email:hover {
+      background: var(--navy2);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg)
+    }
+
+    .btn-wa {
+      background: #25D366;
+      color: #fff
+    }
+
+    .btn-wa:hover {
+      background: #1ebe5e;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(37, 211, 102, 0.3)
+    }
+
+    .contact-btn-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0
+    }
+
+    .contact-btn-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      opacity: 0.8;
+      display: block;
+      margin-bottom: 2px
+    }
+
+    .contact-btn-val {
+      font-size: 0.9rem;
+      font-weight: 600
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy);
+      padding: 36px 5%
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .footer-brand img {
+      height: 36px;
+      filter: invert(1) brightness(1.2);
+      mix-blend-mode: screen;
+    }
+
+    .footer-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.05em
+    }
+
+    .footer-copy {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.1em
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px
+    }
+
+    .footer-links a {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: none;
+      transition: color .3s;
+      letter-spacing: 0.1em
+    }
+
+    .footer-links a:hover {
+      color: #fff
+    }
+
+    /* LIGHTBOX */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(10, 12, 30, 0.97);
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: stretch
+    }
+
+    .lightbox.open {
+      display: flex
+    }
+
+    .lb-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #fff;
+      font-size: 1.4rem;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.85;
+      transition: all .2s;
+      z-index: 10
+    }
+
+    .lb-close:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.25)
+    }
+
+    .lb-back {
+      position: absolute;
+      top: 14px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.85;
+      transition: all .2s;
+      z-index: 10
+    }
+
+    .lb-back:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.25)
+    }
+
+    /* Split layout */
+    .lb-body {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden
+    }
+
+    /* Left: image viewer */
+    .lb-left {
+      flex: 1.1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px 24px;
+      gap: 14px;
+      min-width: 0;
+      background: rgba(0, 0, 0, 0.3)
+    }
+
+    .lb-img-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 680px
+    }
+
+    .lb-img {
+      flex: 1;
+      max-height: 58vh;
+      width: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block
+    }
+
+    .lb-nav {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #fff;
+      font-size: 1.6rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .lb-nav:hover {
+      background: rgba(255, 255, 255, 0.3)
+    }
+
+    .lb-dots {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 300px
+    }
+
+    .lb-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+      cursor: pointer;
+      transition: background .2s;
+      padding: 0
+    }
+
+    .lb-dot.active {
+      background: #fff
+    }
+
+    .lb-count {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.75rem
+    }
+
+    /* Right: About panel */
+    .lb-right {
+      width: 350px;
+      flex-shrink: 0;
+      background: #f8f9fc;
+      overflow-y: auto;
+      padding: 0;
+      display: flex;
+      flex-direction: column
+    }
+
+    .lb-right::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .lb-right::-webkit-scrollbar-thumb {
+      background: var(--navy2);
+      border-radius: 4px
+    }
+
+    .lb-about-header {
+      background: linear-gradient(135deg, var(--navy), #2d3a6b);
+      padding: 22px 24px 18px;
+      flex-shrink: 0
+    }
+
+    .lb-about-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px
+    }
+
+    .lb-about-subtitle {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.08em;
+      text-transform: uppercase
+    }
+
+    .lb-about-body {
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      flex: 1
+    }
+
+    .lb-about-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px
+    }
+
+    .lb-about-item {
+      background: #fff;
+      border-radius: 10px;
+      padding: 13px 15px;
+      box-shadow: 0 2px 8px rgba(26, 35, 70, 0.07);
+      border-left: 3px solid var(--navy)
+    }
+
+    .lb-about-item p {
+      font-size: 0.78rem;
+      line-height: 1.75;
+      color: var(--text-s);
+      margin: 0
+    }
+
+    .lb-about-item strong {
+      color: var(--navy);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 3px;
+      font-size: 0.8rem
+    }
+
+    .lb-about-note {
+      font-size: 0.68rem;
+      color: var(--text-xs);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      font-style: italic
+    }
+
+    .lb-facilities-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px
+    }
+
+    .lb-facilities-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.06em;
+      text-transform: uppercase
+    }
+
+    .lb-facilities-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border)
+    }
+
+    .lb-facilities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 14px
+    }
+
+    .lb-facility {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.71rem;
+      color: var(--text-s);
+      background: #fff;
+      border: 1.5px solid #d1d9f0;
+      border-radius: 20px;
+      padding: 4px 11px;
+      white-space: nowrap
+    }
+
+    .lb-facility-icon {
+      font-size: 0.82rem;
+      color: #16a34a
+    }
+
+    .lb-rating {
+      background: linear-gradient(135deg, #f0f4ff, #e8eeff);
+      border-radius: 10px;
+      padding: 13px 15px;
+      font-size: 0.78rem;
+      color: var(--text-s);
+      line-height: 1.75;
+      border: 1px solid #d1d9f0
+    }
+
+    .lb-rating::before {
+      content: '⭐ ';
+      font-size: 0.82rem
+    }
+
+    .lb-rating strong {
+      color: var(--navy);
+      font-weight: 700
+    }
+
+    @media(max-width:768px) {
+      .lb-right {
+        display: none
+      }
+
+      .lb-left {
+        padding: 44px 12px 20px
+      }
+    }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .8s, transform .8s
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none
+    }
+
+    .reveal-d1 {
+      transition-delay: .1s
+    }
+
+    .reveal-d2 {
+      transition-delay: .2s
+    }
+
+    .reveal-d3 {
+      transition-delay: .3s
+    }
+
+    .reveal-d4 {
+      transition-delay: .4s
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:900px) {
+      .prop-grid {
+        grid-template-columns: 1fr
+      }
+
+      .commercial-card {
+        grid-template-columns: 1fr
+      }
+
+      .comm-img-wrap {
+        height: 260px
+      }
+
+      .nav-links,
+      .nav-cta {
+        display: none
+      }
+
+      .contact-btns {
+        flex-direction: column;
+        align-items: center
+      }
+    }
+
+    @media(max-width:600px) {
+      .hero-stats {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-brand">
+      <img src="images/logo.png" alt="Wilmer House" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="#residential">Residential</a></li>
+      <li><a href="#commercial">Commercial</a></li>
+      <li><a href="#clients">Clients</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Enquire Now</a>
+  </nav>
+
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="images/hero.png" alt="Wilmer House" class="hero-img" />
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Quick · Stay · Relax</div>
+      <h1>Your Perfect<br><em>Rental Space</em><br>Awaits.</h1>
+      <p class="hero-sub">Premium furnished properties for short & long-term stays. Comfort, style, and luxury — all in
+        one place.</p>
+      <div class="hero-btns">
+        <a href="#residential" class="btn-primary">View Properties</a>
+        <a href="#contact" class="btn-outline">Contact Us</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">5</span><span class="stat-lbl">Properties</span></div>
+      <div class="stat"><span class="stat-num">500+</span><span class="stat-lbl">Happy Guests</span></div>
+      <div class="stat"><span class="stat-num">4yr+</span><span class="stat-lbl">Experience</span></div>
+    </div>
+  </section>
+
+
+  <!-- RESIDENTIAL -->
+  <section class="residential-sec" id="residential">
+    <div class="sec-header reveal">
+      <div class="sec-tag">
+        <div class="sec-tag-line"></div><span class="sec-tag-text">Residential</span>
+      </div>
+      <h2 class="sec-title">Our <em>Residential</em> Properties</h2>
+      <p class="sec-desc">Choose from our curated selection of premium furnished homes — tap any property to view all
+        photos.</p>
+    </div>
+    <div class="prop-grid">
+
+      <!-- Property 1 -->
+      <div class="prop-card reveal reveal-d1" onclick="openGallery(0)">
+        <div class="prop-img-wrap">
+          <img src="images/prop1/590004298.jpg" alt="The Oak Suite" class="prop-img" />
+          <div class="prop-badge">For Rent</div>
+          <div class="prop-gallery-hint">📷 View Photos</div>
+        </div>
+        <div class="prop-body">
+          <div class="prop-price">Contact for Price</div>
+          <div class="prop-name">The Oak Suite</div>
+          <div class="prop-loc">📍 Banjara Hills, Hyderabad</div>
+          <div class="prop-specs">
+            <div class="spec"><strong>2</strong>BHK</div>
+            <div class="spec"><strong>2</strong>Baths</div>
+            <div class="spec"><strong>1400</strong>Sq.ft</div>
+            <div class="spec"><strong>Furnished</strong>Type</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property 2 -->
+      <div class="prop-card reveal reveal-d2" onclick="openGallery(1)">
+        <div class="prop-img-wrap">
+          <img src="images/prop2/830562377.jpg" alt="City View Studio" class="prop-img" />
+          <div class="prop-badge">For Rent</div>
+          <div class="prop-gallery-hint">📷 View Photos</div>
+        </div>
+        <div class="prop-body">
+          <div class="prop-price">Contact for Price</div>
+          <div class="prop-name">City View Studio</div>
+          <div class="prop-loc">📍 Jubilee Hills, Hyderabad</div>
+          <div class="prop-specs">
+            <div class="spec"><strong>1</strong>BHK</div>
+            <div class="spec"><strong>1</strong>Bath</div>
+            <div class="spec"><strong>900</strong>Sq.ft</div>
+            <div class="spec"><strong>Furnished</strong>Type</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property 3 -->
+      <div class="prop-card reveal reveal-d3" onclick="openGallery(2)">
+        <div class="prop-img-wrap">
+          <img src="images/prop3/681411093.jpg" alt="Green Valley Home" class="prop-img" />
+          <div class="prop-badge">For Rent</div>
+          <div class="prop-gallery-hint">📷 View Photos</div>
+        </div>
+        <div class="prop-body">
+          <div class="prop-price">Contact for Price</div>
+          <div class="prop-name">Green Valley Home</div>
+          <div class="prop-loc">📍 Gachibowli, Hyderabad</div>
+          <div class="prop-specs">
+            <div class="spec"><strong>3</strong>BHK</div>
+            <div class="spec"><strong>3</strong>Baths</div>
+            <div class="spec"><strong>2200</strong>Sq.ft</div>
+            <div class="spec"><strong>Furnished</strong>Type</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property 4 -->
+      <div class="prop-card reveal reveal-d4" onclick="openGallery(3)">
+        <div class="prop-img-wrap">
+          <img src="images/prop1/604882914.jpg" alt="The Pool Villa" class="prop-img" />
+          <div class="prop-badge">Coming Soon</div>
+          <div class="prop-gallery-hint">📷 View Photos</div>
+        </div>
+        <div class="prop-body">
+          <div class="prop-price">Contact for Price</div>
+          <div class="prop-name">The Pool Villa</div>
+          <div class="prop-loc">📍 Kokapet, Hyderabad</div>
+          <div class="prop-specs">
+            <div class="spec"><strong>4</strong>BHK</div>
+            <div class="spec"><strong>4</strong>Baths</div>
+            <div class="spec"><strong>4500</strong>Sq.ft</div>
+            <div class="spec"><strong>Furnished</strong>Type</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <hr class="sec-divider" />
+
+  <!-- COMMERCIAL -->
+  <section class="commercial-sec" id="commercial">
+    <div class="commercial-split">
+      <!-- Left: Image -->
+      <div class="comm-img-side">
+        <img src="images/commercial/comm-main.webp" alt="Hop-In Express" class="comm-main-img" />
+        <div class="comm-badge">Commercial &middot; Available</div>
+        <button class="comm-gallery-btn" onclick="openCommGallery()">&#128247;&nbsp; View All Photos</button>
+      </div>
+      <!-- Right: About Panel -->
+      <div class="comm-about">
+        <div class="comm-about-header">
+          <div class="comm-tag">Commercial Rental</div>
+          <h2 class="comm-name">Hop-In Express</h2>
+          <div class="comm-tagline">Spirits &middot; Tobacco &middot; Vapes &middot; Grocery</div>
+          <div class="comm-price-row">&#128222;&nbsp; Contact for Pricing</div>
+        </div>
+        <div class="comm-about-body">
+          <div class="comm-about-list">
+            <div class="comm-about-item">
+              <strong>About the Property</strong>
+              <p>A fully operational convenience store at a prime high-street location. Well-stocked with spirits,
+                tobacco, vapes, groceries, fresh produce, and more.</p>
+            </div>
+            <div class="comm-about-item">
+              <strong>Key Highlights</strong>
+              <p>Prominent signage, large display windows, refrigeration units, CCTV security, and high footfall area.
+                Ideal for retail or franchise operators.</p>
+            </div>
+            <div class="comm-about-item">
+              <strong>Location &amp; Access</strong>
+              <p>Positioned on a busy high street with excellent visibility and consistent daily footfall. Easy access
+                for deliveries and customers alike.</p>
+            </div>
+          </div>
+          <div class="comm-facilities-header">
+            <span class="comm-fac-title">Facilities</span>
+            <div class="comm-fac-line"></div>
+          </div>
+          <div class="comm-facilities">
+            <div class="comm-fac-chip"><span>&#128663;</span>&nbsp;Free Parking</div>
+            <div class="comm-fac-chip"><span>&#128246;</span>&nbsp;High-Speed WiFi</div>
+            <div class="comm-fac-chip"><span>&#128274;</span>&nbsp;CCTV Security</div>
+            <div class="comm-fac-chip"><span>&#10052;&#65039;</span>&nbsp;Refrigeration</div>
+            <div class="comm-fac-chip"><span>&#128717;&#65039;</span>&nbsp;Display Units</div>
+            <div class="comm-fac-chip"><span>&#9889;</span>&nbsp;3-Phase Power</div>
+            <div class="comm-fac-chip"><span>&#128717;&#65039;</span>&nbsp;Storage Room</div>
+            <div class="comm-fac-chip"><span>&#128736;&#65039;</span>&nbsp;EPOS Ready</div>
+          </div>
+          <a href="#contact" class="comm-enquire-btn">&#128222;&nbsp; Enquire Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <hr class="sec-divider" />
+
+  <!-- TESTIMONIALS -->
+  <section class="testi-sec" id="clients">
+    <div class="sec-header reveal">
+      <div class="sec-tag">
+        <div class="sec-tag-line"></div><span class="sec-tag-text">Past Clients</span>
+      </div>
+      <h2 class="sec-title">What Our <em>Guests</em> Say</h2>
+      <p class="sec-desc">Trusted by guests across Hyderabad — scroll to read more.</p>
+    </div>
+    <div class="testi-scroll reveal">
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">Wilmer House made our stay in Hyderabad truly memorable. The property was spotless, fully
+          furnished, and exactly as shown. Highly recommend!</p>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-author">
+          <div class="testi-avatar">RK</div>
+          <div>
+            <div class="testi-name">Rahul Kapoor</div>
+            <div class="testi-role">Guest · 3 months stay</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">The Pool Villa was everything we needed for our family vacation. Spacious, luxurious, and
+          great support from the Wilmer House team throughout.</p>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-author">
+          <div class="testi-avatar">PM</div>
+          <div>
+            <div class="testi-name">Priya Mehta</div>
+            <div class="testi-role">Guest · Family stay</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">We rented the Business Hub for 6 months and it was a game changer for our team. Prime
+          location, excellent facilities, very professional.</p>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-author">
+          <div class="testi-avatar">AS</div>
+          <div>
+            <div class="testi-name">Arjun Shetty</div>
+            <div class="testi-role">Commercial Tenant</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">Quick response, clean property, no delays. The City View Studio was perfect for my 2-month
+          work assignment in Hyderabad. Will book again!</p>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-author">
+          <div class="testi-avatar">SK</div>
+          <div>
+            <div class="testi-name">Sneha Kumar</div>
+            <div class="testi-role">Guest · Work stay</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <hr class="sec-divider" />
+
+  <!-- CONTACT -->
+  <section class="contact-sec" id="contact">
+    <div class="contact-inner reveal">
+      <div class="sec-tag" style="justify-content:center">
+        <div class="sec-tag-line"></div><span class="sec-tag-text">Contact Us</span>
+        <div class="sec-tag-line"></div>
+      </div>
+      <h2 class="sec-title">Ready to <em>Book</em> Your Stay?</h2>
+      <p class="sec-desc">Reach out directly via Email or WhatsApp — we respond within hours. Your perfect rental is
+        just a tap away.</p>
+      <div class="contact-btns">
+        <a href="mailto:hello@wilmerhouse.com" class="contact-btn btn-email" id="email-btn">
+          <span class="contact-btn-icon">✉️</span>
+          <div class="contact-btn-text">
+            <span class="contact-btn-label">Send us an email</span>
+            <span class="contact-btn-val">hello@wilmerhouse.com</span>
+          </div>
+        </a>
+        <a href="https://wa.me/919999999999?text=Hi%20Wilmer%20House!%20I%20am%20interested%20in%20renting%20a%20property."
+          class="contact-btn btn-wa" id="wa-btn" target="_blank">
+          <span class="contact-btn-icon">💬</span>
+          <div class="contact-btn-text">
+            <span class="contact-btn-label">Chat on WhatsApp</span>
+            <span class="contact-btn-val">+91 99999 99999</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="images/logo.png" alt="Wilmer House" />
+        <span class="footer-name">Wilmer House</span>
+      </div>
+      <span class="footer-copy">© 2026 Wilmer House · Quick | Stay | Relax</span>
+      <div class="footer-links">
+        <a href="#residential">Properties</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- LIGHTBOX (Residential) -->
+  <div class="lightbox" id="lightbox" onclick="closeLightboxOutside(event)">
+    <button class="lb-back" onclick="closeLightbox()">&#8592; Back to Properties</button>
+    <button class="lb-close" onclick="closeLightbox()">&#x2715;</button>
+    <div class="lb-body">
+      <!-- Left: Images -->
+      <div class="lb-left">
+        <div class="lb-img-wrap">
+          <button class="lb-nav" onclick="lbNav(-1)">‹</button>
+          <img src="" alt="" class="lb-img" id="lb-img" />
+          <button class="lb-nav" onclick="lbNav(1)">›</button>
+        </div>
+        <div class="lb-dots" id="lb-dots"></div>
+        <div class="lb-count" id="lb-count"></div>
+      </div>
+      <!-- Right: About -->
+      <div class="lb-right" id="lb-about-panel">
+        <div class="lb-about-header">
+          <div class="lb-about-title">About this property</div>
+          <div class="lb-about-subtitle">Property Details &amp; Facilities</div>
+        </div>
+        <div class="lb-about-body">
+          <div class="lb-about-list" id="lb-about-list"></div>
+          <div class="lb-about-note" id="lb-about-note"></div>
+          <div class="lb-facilities-header">
+            <span class="lb-facilities-title">Popular Facilities</span>
+            <div class="lb-facilities-line"></div>
+          </div>
+          <div class="lb-facilities" id="lb-facilities"></div>
+          <div class="lb-rating" id="lb-rating"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMERCIAL GALLERY LIGHTBOX -->
+  <style>
+    .comm-lb {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      background: rgba(5, 8, 22, 0.97);
+      flex-direction: column
+    }
+
+    .comm-lb.open {
+      display: flex
+    }
+
+    .comm-lb-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .comm-lb-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: #fff;
+      font-weight: 600
+    }
+
+    .comm-lb-subtitle {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 2px;
+      letter-spacing: 0.06em
+    }
+
+    .comm-lb-close {
+      background: rgba(255, 255, 255, 0.12);
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s
+    }
+
+    .comm-lb-close:hover {
+      background: rgba(255, 255, 255, 0.25)
+    }
+
+    .comm-lb-body {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden
+    }
+
+    /* Main image viewer */
+    .comm-lb-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      gap: 16px;
+      background: rgba(0, 0, 0, 0.25);
+      min-width: 0;
+    }
+
+    .comm-lb-img-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      max-width: 780px
+    }
+
+    .comm-lb-img {
+      flex: 1;
+      max-height: 62vh;
+      width: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      display: block
+    }
+
+    .comm-lb-nav {
+      background: rgba(255, 255, 255, 0.14);
+      border: none;
+      color: #fff;
+      font-size: 1.8rem;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .comm-lb-nav:hover {
+      background: rgba(255, 255, 255, 0.28)
+    }
+
+    .comm-lb-count {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em
+    }
+
+    /* Thumbnail strip */
+    .comm-lb-thumbs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 4px;
+      max-width: 780px;
+      width: 100%;
+    }
+
+    .comm-lb-thumbs::-webkit-scrollbar {
+      height: 3px
+    }
+
+    .comm-lb-thumbs::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px
+    }
+
+    .comm-lb-thumb {
+      width: 58px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: 5px;
+      cursor: pointer;
+      opacity: .5;
+      border: 2px solid transparent;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+
+    .comm-lb-thumb.active {
+      opacity: 1;
+      border-color: #fff
+    }
+
+    .comm-lb-thumb:hover {
+      opacity: .85
+    }
+  </style>
+  <div class="comm-lb" id="comm-lb" onclick="closeCommLbOutside(event)">
+    <div class="comm-lb-header">
+      <div>
+        <div class="comm-lb-title">Hop-In Express</div>
+        <div class="comm-lb-subtitle">Commercial Property Gallery</div>
+      </div>
+      <button class="comm-lb-close" onclick="closeCommGallery()">&#x2715;</button>
+    </div>
+    <div class="comm-lb-body">
+      <div class="comm-lb-main">
+        <div class="comm-lb-img-row">
+          <button class="comm-lb-nav" onclick="commLbNav(-1)">&#8249;</button>
+          <img src="" alt="Hop-In Express" class="comm-lb-img" id="comm-lb-img" />
+          <button class="comm-lb-nav" onclick="commLbNav(1)">&#8250;</button>
+        </div>
+        <div class="comm-lb-count" id="comm-lb-count"></div>
+        <div class="comm-lb-thumbs" id="comm-lb-thumbs"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    // Gallery data — add more images per property when you have real photos
+    const properties = [
+      {
+        name: "Property 1",
+        images: [
+          "images/prop1/590004298.jpg", "images/prop1/590004327.jpg", "images/prop1/590209223.jpg",
+          "images/prop1/590209741.jpg", "images/prop1/590213859.jpg", "images/prop1/590213932.jpg",
+          "images/prop1/590213972.jpg", "images/prop1/590213999.jpg", "images/prop1/590214013.jpg",
+          "images/prop1/590214034.jpg", "images/prop1/604882914.jpg", "images/prop1/604882929.jpg",
+          "images/prop1/698516985.jpg", "images/prop1/698517270.jpg"
+        ],
+        about: [
+          { label: "Comfortable Accommodation", text: "Wilmer House in Eastleigh offers family rooms with private entrances, parquet floors, and wardrobes. Each room includes a shared bathroom, work desk, and hairdryer." },
+          { label: "Essential Facilities", text: "Guests enjoy free WiFi, private check-in and check-out, a lounge, shared kitchen, daily housekeeping, laundry service, and full-day security. Free on-site private parking is available." },
+          { label: "Convenient Location", text: "Located 4 km from Southampton Airport, the guest house is near attractions such as The Mayflower Theatre (9 km) and Southampton Guildhall (9 km). Free on-site private parking is available." },
+          { label: "Guest Satisfaction", text: "Guests appreciate the room cleanliness, kitchen, and value for money." }
+        ],
+        note: "Distance in property description is calculated using © OpenStreetMap",
+        facilities: [
+          { icon: "P", label: "Free parking" },
+          { icon: "📶", label: "Fast free Wifi (1013 Mbps)" },
+          { icon: "👨‍👩‍👧", label: "Family rooms" },
+          { icon: "🚭", label: "Non-smoking rooms" },
+          { icon: "🛎", label: "Room service" }
+        ],
+        rating: "Couples in particular like the location — they rated it <strong>8.8</strong> for a two-person trip."
+      },
+      {
+        name: "Property 2",
+        images: ["images/prop2/830562377.jpg", "images/prop2/830562524.jpg", "images/prop2/830562527.jpg", "images/prop2/838929559.jpg"],
+        about: [
+          { label: "Comfortable Accommodation", text: "Wilmer House in Eastleigh offers adults-only homestay accommodation with free WiFi. The property features private check-in and check-out services, a lounge, shared kitchen, daily housekeeping, full-day security, express services, and room service." },
+          { label: "Convenient Facilities", text: "Guests can enjoy free on-site private parking, a refrigerator, work desk, shared bathroom, hairdryer, and wardrobe in every room." }
+        ],
+        note: "",
+        facilities: [
+          { icon: "P", label: "Free parking" },
+          { icon: "📶", label: "Free Wifi" },
+          { icon: "🚭", label: "Non-smoking rooms" },
+          { icon: "🛎", label: "Room service" },
+          { icon: "🚌", label: "Airport shuttle" }
+        ],
+        rating: ""
+      },
+      {
+        name: "Property 3",
+        images: [
+          "images/prop3/681411093.jpg", "images/prop3/681411103.jpg", "images/prop3/681411108.jpg",
+          "images/prop3/681411118.jpg", "images/prop3/681411161.jpg", "images/prop3/681411181.jpg",
+          "images/prop3/681411237.jpg", "images/prop3/681411255.jpg", "images/prop3/681411268.jpg",
+          "images/prop3/681411342.jpg", "images/prop3/681411359.jpg"
+        ],
+        about: [
+          { label: "Comfortable Living Space", text: "GuestReady - 1BR in East London w Balcony offers a spacious apartment in London. The property features one bedroom, a living room, and a bathroom." },
+          { label: "Modern Amenities", text: "Guests enjoy a terrace, free WiFi, and a lift. The apartment includes a fully equipped kitchen with a coffee machine, refrigerator, microwave, dishwasher, oven, and toaster. Additional amenities include streaming services, washing machine, hairdryer, and TV." },
+          { label: "Prime Location", text: "Located 18 minutes from the Tower of London, 1.8 km from Brick Lane and Sky Garden, and 1.7 km from Tower Bridge. London City Airport is 9 km away. Boating is available in the surrounding area." }
+        ],
+        note: "Distance in property description is calculated using © OpenStreetMap",
+        facilities: [
+          { icon: "📶", label: "Free Wifi" },
+          { icon: "🚭", label: "Non-smoking rooms" },
+          { icon: "🏡", label: "Terrace" },
+          { icon: "🛗", label: "Lift" }
+        ],
+        rating: ""
+      },
+      {
+        name: "Property 4",
+        images: ["images/prop1/604882914.jpg", "images/prop1/698516985.jpg"],
+        about: [
+          { label: "Coming Soon", text: "Full details for this property will be available soon. Please contact us for more information." }
+        ],
+        note: "",
+        facilities: [],
+        rating: ""
+      }
+    ];
+
+    let curProp = 0, curImg = 0;
+
+    function openGallery(propIdx) {
+      curProp = propIdx; curImg = 0;
+      renderLightbox();
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function closeLightboxOutside(e) {
+      if (e.target === document.getElementById('lightbox')) closeLightbox();
+    }
+    function lbNav(dir) {
+      const imgs = properties[curProp].images;
+      curImg = (curImg + dir + imgs.length) % imgs.length;
+      renderLightbox();
+    }
+    function goToImg(idx) {
+      curImg = idx; renderLightbox();
+    }
+    function renderLightbox() {
+      const p = properties[curProp];
+      // Update image
+      document.getElementById('lb-img').src = p.images[curImg];
+      document.getElementById('lb-count').textContent = (curImg + 1) + ' / ' + p.images.length;
+      // Dots
+      const dots = document.getElementById('lb-dots');
+      dots.innerHTML = '';
+      p.images.forEach((_, i) => {
+        const d = document.createElement('button');
+        d.className = 'lb-dot' + (i === curImg ? ' active' : '');
+        d.onclick = () => goToImg(i);
+        dots.appendChild(d);
+      });
+      // About list
+      const aboutList = document.getElementById('lb-about-list');
+      aboutList.innerHTML = '';
+      p.about.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'lb-about-item';
+        div.innerHTML = `<p><strong>${item.label}:</strong> ${item.text}</p>`;
+        aboutList.appendChild(div);
+      });
+      // Note
+      document.getElementById('lb-about-note').textContent = p.note || '';
+      // Facilities
+      const facEl = document.getElementById('lb-facilities');
+      facEl.innerHTML = '';
+      p.facilities.forEach(f => {
+        const div = document.createElement('div');
+        div.className = 'lb-facility';
+        div.innerHTML = `<span class="lb-facility-icon">${f.icon}</span><span>${f.label}</span>`;
+        facEl.appendChild(div);
+      });
+      // Rating
+      const rEl = document.getElementById('lb-rating');
+      if (p.rating) { rEl.innerHTML = p.rating; rEl.style.display = 'block'; }
+      else { rEl.style.display = 'none'; }
+    }
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('lightbox').classList.contains('open')) return;
+      if (e.key === 'ArrowRight') lbNav(1);
+      if (e.key === 'ArrowLeft') lbNav(-1);
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // ---- COMMERCIAL GALLERY ----
+    const commImages = [
+      'images/commercial/comm-main.webp',
+      'images/commercial/comm1.webp',
+      'images/commercial/comm2.webp',
+      'images/commercial/comm3.webp',
+      'images/commercial/comm4.webp',
+      'images/commercial/comm5.webp',
+      'images/commercial/comm6.webp',
+      'images/commercial/comm7.webp',
+      'images/commercial/comm8.webp',
+      'images/commercial/comm9.webp',
+      'images/commercial/comm10.webp',
+      'images/commercial/comm11.webp',
+      'images/commercial/comm12.webp',
+      'images/commercial/comm13.webp'
+    ];
+    let commIdx = 0;
+    function openCommGallery(startIdx = 0) {
+      commIdx = startIdx;
+      renderCommGallery();
+      document.getElementById('comm-lb').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCommGallery() {
+      document.getElementById('comm-lb').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function closeCommLbOutside(e) {
+      if (e.target === document.getElementById('comm-lb')) closeCommGallery();
+    }
+    function commLbNav(dir) {
+      commIdx = (commIdx + dir + commImages.length) % commImages.length;
+      renderCommGallery();
+    }
+    function renderCommGallery() {
+      document.getElementById('comm-lb-img').src = commImages[commIdx];
+      document.getElementById('comm-lb-count').textContent = (commIdx + 1) + ' / ' + commImages.length;
+      const thumbs = document.getElementById('comm-lb-thumbs');
+      thumbs.innerHTML = '';
+      commImages.forEach((src, i) => {
+        const img = document.createElement('img');
+        img.src = src; img.className = 'comm-lb-thumb' + (i === commIdx ? ' active' : '');
+        img.onclick = () => { commIdx = i; renderCommGallery(); }
+        thumbs.appendChild(img);
+      });
+      // scroll active thumb into view
+      setTimeout(() => {
+        const active = thumbs.querySelector('.active');
+        if (active) active.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+      }, 50);
+    }
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('comm-lb').classList.contains('open')) return;
+      if (e.key === 'ArrowRight') commLbNav(1);
+      if (e.key === 'ArrowLeft') commLbNav(-1);
+      if (e.key === 'Escape') closeCommGallery();
+    });
+
+    // Scroll reveal
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  </script>
+</body>
+
+</html>
