@@ -1572,7 +1572,14 @@
         filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
       }
       nav:not(.scrolled) .nav-links a {
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--navy); /* Navy text for better visibility on mobile */
+        font-weight: 600;
+      }
+      .nav-links {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(8px);
+        padding: 8px 16px;
+        border-radius: 20px;
       }
       .hero-content {
         padding-top: 80px;
@@ -1618,8 +1625,8 @@
       }
       .hero-img {
         object-fit: cover !important;
-        object-position: 82% center !important; /* Forces the house to be seen on mobile */
-        transform-origin: 82% center;
+        object-position: 75% center !important; /* Slightly wider view of the house surroundings */
+        transform-origin: 75% center;
       }
       .hero-content {
         padding-top: 60px;
