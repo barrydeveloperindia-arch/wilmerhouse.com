@@ -1611,7 +1611,7 @@
 
     @media (max-width: 768px) {
       .hero {
-        height: 85vh;
+        height: 100vh !important; /* Fill the entire screen */
         min-height: 480px;
         display: flex;
         align-items: center;
@@ -1622,17 +1622,14 @@
         transform-origin: 82% center;
       }
       .hero-content {
-        padding-top: 80px;
-        padding-bottom: 40px;
+        padding-top: 60px;
+        padding-bottom: 20px;
       }
       .hero h1 {
         font-size: clamp(2.2rem, 10vw, 3.2rem);
       }
       .hero-stats {
-        right: auto;
-        left: 0;
-        border-top-right-radius: 12px;
-        border-top-left-radius: 0;
+        display: none !important; /* Hide stats as requested to keep it clean */
       }
 
       .lb-right {
