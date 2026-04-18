@@ -184,83 +184,6 @@
       font-size: 0.7rem;
     }
 
-    @media (max-width: 991px) {
-      /* Hide bottom nav — show top nav instead */
-      .bottom-nav {
-        display: none !important;
-      }
-      .nav-links {
-        display: flex !important;
-        gap: 16px;
-      }
-      .nav-links a {
-        font-size: 0.65rem;
-        letter-spacing: 0.05em;
-      }
-      nav {
-        padding: 0 3% 0 1.5%;
-        height: 64px;
-      }
-      nav.scrolled {
-        background: #ffffff;
-        backdrop-filter: blur(12px);
-        border-bottom: 2px solid var(--navy);
-      }
-      nav:not(.scrolled) .nav-brand img {
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-      }
-      nav:not(.scrolled) .nav-links a {
-        color: rgba(255,255,255,0.9);
-      }
-      .hero-content {
-        padding-top: 80px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .hero {
-        height: 85vh;
-        min-height: 480px;
-        display: flex;
-        align-items: center;
-      }
-      .hero-img {
-        object-fit: cover;
-        object-position: 82% center; /* Precisely focus on the house door/windows */
-        transform-origin: 82% center; /* Ensure zoom animation focuses on the house */
-      }
-      .hero-content {
-        padding-top: 80px;
-        padding-bottom: 40px;
-      }
-      .hero h1 {
-        font-size: clamp(2.2rem, 10vw, 3.2rem);
-      }
-      .hero-stats {
-        right: auto;
-        left: 0;
-        border-top-right-radius: 12px;
-        border-top-left-radius: 0;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .nav-links {
-        gap: 12px;
-      }
-      .nav-links a {
-        font-size: 0.62rem;
-      }
-      .nav-brand img {
-        height: 58px;
-      }
-      .hero {
-        height: 80vh;
-      }
-      .hero h1 {
-        font-size: 2.1rem;
-      }
-    }
 
     /* HERO */
     .hero {
@@ -1626,33 +1549,135 @@
     }
 
     /* RESPONSIVE */
+    @media (max-width: 991px) {
+      /* Show top nav links on smaller screens too */
+      .nav-links {
+        display: flex !important;
+        gap: 16px;
+      }
+      .nav-links a {
+        font-size: 0.65rem;
+        letter-spacing: 0.05em;
+      }
+      nav {
+        padding: 0 3% 0 1.5%;
+        height: 64px;
+      }
+      nav.scrolled {
+        background: #ffffff;
+        backdrop-filter: blur(12px);
+        border-bottom: 2px solid var(--navy);
+      }
+      nav:not(.scrolled) .nav-brand img {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      }
+      nav:not(.scrolled) .nav-links a {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .hero-content {
+        padding-top: 80px;
+      }
+    }
+
     @media(max-width:900px) {
       .prop-grid {
         grid-template-columns: 1fr
       }
 
-      .commercial-card {
-        grid-template-columns: 1fr
+      .commercial-split {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: auto;
+        gap: 30px;
       }
 
-      .comm-img-wrap {
-        height: 260px
+      .comm-img-side {
+        height: 380px;
+        border-radius: 16px;
       }
 
-      .nav-links,
-      .nav-cta {
-        display: none
+      .comm-about-header,
+      .comm-about-body {
+        padding: 0;
       }
 
       .contact-btns {
-        flex-direction: column;
-        align-items: center
+        grid-template-columns: 1fr;
+      }
+      .contact-inner {
+        padding: 40px 20px;
       }
     }
 
-    @media(max-width:600px) {
+    @media (max-width: 768px) {
+      .hero {
+        height: 85vh;
+        min-height: 480px;
+        display: flex;
+        align-items: center;
+      }
+      .hero-img {
+        object-fit: cover !important;
+        object-position: 82% center !important; /* Forces the house to be seen on mobile */
+        transform-origin: 82% center;
+      }
+      .hero-content {
+        padding-top: 80px;
+        padding-bottom: 40px;
+      }
+      .hero h1 {
+        font-size: clamp(2.2rem, 10vw, 3.2rem);
+      }
       .hero-stats {
+        right: auto;
+        left: 0;
+        border-top-right-radius: 12px;
+        border-top-left-radius: 0;
+      }
+
+      .lb-right {
         display: none
+      }
+
+      .lb-left {
+        padding: 60px 0 30px;
+        background: #000;
+      }
+
+      .lb-img-wrap {
+        padding: 0;
+      }
+
+      .lb-nav {
+        width: 44px;
+        height: 44px;
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      .lb-nav-prev { left: 10px; }
+      .lb-nav-next { right: 10px; }
+      
+      .lb-img {
+        max-height: 80vh;
+        border-radius: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links {
+        gap: 12px;
+      }
+      .nav-links a {
+        font-size: 0.62rem;
+      }
+      .nav-brand img {
+        height: 58px;
+      }
+      .hero {
+        height: 80vh;
+      }
+      .hero h1 {
+        font-size: 2.1rem;
       }
     }
   </style>
