@@ -46,6 +46,7 @@ async function initCalendar(idx) {
         minDate: "today",
         dateFormat: "Y-m-d",
         disable: [],
+        allowInput: true,
         onChange: function() { updatePrice(); }
     };
 
@@ -65,6 +66,13 @@ async function initCalendar(idx) {
         }
     } catch(e) {
         console.error("Failed to load disabled dates", e);
+    }
+
+    if (typeof flatpickr === 'undefined') {
+        console.error("Flatpickr not loaded! Falling back to native date inputs.");
+        document.getElementById('check-in').type = 'date';
+        document.getElementById('check-out').type = 'date';
+        return;
     }
 
     if (checkInPicker) checkInPicker.destroy();

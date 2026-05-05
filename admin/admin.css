@@ -662,9 +662,12 @@ td {
     border: 1px solid rgba(255, 255, 255, 0.3);
     width: 90%;
     max-width: 600px;
+    max-height: 90vh; /* Ensure modal doesn't exceed screen height */
     border-radius: 24px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -692,8 +695,10 @@ td {
 
 .edit-modal-body {
     padding: 30px;
-    max-height: 70vh;
+    flex: 1;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
 .edit-form-group {
@@ -872,9 +877,12 @@ td {
     background: #ffffff;
     width: 100%;
     max-width: 650px;
+    max-height: 90vh;
     border-radius: 20px;
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     animation: modalFadeIn 0.3s ease-out forwards;
 }
 
@@ -914,8 +922,10 @@ td {
 .tab-content {
     display: none;
     padding: 24px;
-    max-height: 60vh;
+    flex: 1;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
 .tab-content.active {

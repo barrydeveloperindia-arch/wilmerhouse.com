@@ -2733,17 +2733,17 @@
   </div>
 
   <!-- BOOKING MODAL -->
-  <div class="booking-modal" id="booking-modal" onclick="if(event.target===this) closeBookingModal()">
+  <div class="booking-modal" id="booking-modal">
     <div class="booking-content">
       <button class="close-booking" onclick="closeBookingModal()">✕</button>
       <div class="booking-header">
-        <p id="modal-prop-name">Property 1</p>
+        <p id="modal-prop-name">Property Name</p>
         <h2>Book Your Stay</h2>
         <div class="header-decoration"></div>
       </div>
       <div class="booking-body">
         
-        <div class="section-label">Select Accommodation</div>
+        <div class="section-label">Accommodation Type</div>
         <div class="booking-type-grid">
           <div class="type-option active" id="type-full" onclick="setBookingType('full')">
             <span class="type-icon">🏡</span>
@@ -2753,10 +2753,6 @@
             <span class="type-icon">🛏️</span>
             <select class="form-input room-select" id="room-count" onchange="setBookingType('rooms')">
               <option value="0" disabled selected>Select Rooms...</option>
-              <option value="1">1 Room</option>
-              <option value="2">2 Rooms</option>
-              <option value="3">3 Rooms</option>
-              <option value="4">4 Rooms</option>
             </select>
           </div>
         </div>
@@ -2832,7 +2828,7 @@
           </div>
         </div>
 
-        <!-- Mock Card Details Form -->
+        <!-- Card Details Form -->
         <div class="card-details-form" id="card-form">
           <div class="form-group">
             <label>Card Number</label>
@@ -2855,13 +2851,6 @@
                 <span class="input-icon">🛡️</span>
                 <input type="text" class="form-input" id="card-cvc" placeholder="123" maxlength="4">
               </div>
-            </div>
-          </div>
-          <div class="form-group" style="margin-top: 12px;">
-            <label>Billing Postcode</label>
-            <div class="input-with-icon">
-              <span class="input-icon">📍</span>
-              <input type="text" class="form-input" id="card-zip" placeholder="e.g. SW1A 1AA">
             </div>
           </div>
         </div>
