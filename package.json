@@ -1,0 +1,17 @@
+{
+  "name": "wilmerhouse.com",
+  "version": "1.0.0",
+  "description": "Wilmer House Property Management System",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest",
+    "test:e2e": "playwright test",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.1",
+    "eslint": "^8.57.0",
+    "http-server": "^14.1.1",
+    "jest": "^29.7.0"
+  }
+}

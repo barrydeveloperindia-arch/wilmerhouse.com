@@ -16,12 +16,32 @@
    solid white with a professional shadow on scroll.
 6. MOBILE OPTIMIZATION: Fixed image cropping on phones; 
    anchored focus on the house building.
+7. BOOKING SYSTEM: Implemented interactive date-picker 
+   calendar with premium styling on the frontend.
+8. ADMIN ACTIONS: Added "Mark Paid" and "Cancel Booking" 
+   dropdowns with database integration in the admin panel.
+9. TESTING: Successfully completed manual testing of 
+   the double-booking prevention and calendar blocking.
+
+10. ADMIN GANTT CHART: Built a visual calendar timeline 
+    in the admin panel to easily view property occupancies.
+11. GLOBAL SEARCH: Added a global availability search bar 
+    (Dates + Guests) to the frontend hero section with live filtering.
+
+12. BOOKING MODIFICATIONS: Added functionality for admins 
+    to edit existing booking dates and details via a modal.
+13. PROPERTY MANAGEMENT: Built a full CRUD system for 
+    managing properties (Add, Edit, Delete, Prices, Images).
 
 ⏳ PENDING / TO-DO
 ----------------------------------------------------
-1. CONTENT UPDATES: Replace placeholder descriptions 
+1. iCAL SYNC (CHANNEL MGR): Generate iCal links to sync 
+   calendars with Airbnb & Booking.com.
+2. INVOICE GENERATOR: Add automated PDF receipt generation 
+   for guests.
+5. CONTENT UPDATES: Replace placeholder descriptions 
    with actual property details (when available).
-2. FINAL DEPLOYMENT: Push the local changes to the 
+6. FINAL DEPLOYMENT: Push the local changes to the 
    live server once verified.
 
 🌟 RECOMMENDATIONS (FOR PREMIUM POLISH)

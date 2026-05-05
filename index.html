@@ -10,6 +10,10 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="booking.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
   <style>
     *,
     *::before,
@@ -1732,6 +1736,7 @@
       <p class="hero-sub">Premium furnished properties for short & long-term stays. Comfort, style, and luxury — all in
         one place.</p>
 
+
     </div>
     <div class="hero-stats">
       <div class="stat"><span class="stat-num">5</span><span class="stat-lbl">Premium Units</span></div>
@@ -1754,7 +1759,7 @@
     <div class="prop-grid">
 
       <!-- Property 1 -->
-      <div class="prop-card reveal reveal-d1" onclick="openGallery(0)">
+      <div class="prop-card reveal reveal-d1" id="prop-card-0" onclick="openGallery(0)">
         <div class="prop-img-wrap">
           <img src="images/prop2/590213932.jpg" alt="Property 1" class="prop-img" />
           <div class="prop-badge">For Rent</div>
@@ -1763,12 +1768,12 @@
         <div class="prop-body">
           <div class="parking-tag">✓ Free Parking</div>
           <div class="prop-price">Contact for Price</div>
-          <div class="prop-name">Luxury 4-Bedroom House</div>
+          <div class="prop-name">Property 1</div>
           <div class="prop-loc">📍 Eastleigh, UK</div>
           <div class="prop-specs">
             <div class="spec">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spec-icon"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
-              <strong>4</strong>BHK
+              <strong>Room No.</strong> 1, 2, 3, 4
             </div>
             <div class="spec">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spec-icon"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-1C4.33 2.5 4 3 4 3c0 2 2 2 2 2"/><path d="M19 8c1.5 0 2.5 1.5 2.5 3V22H3v-3c0-1.5 1.5-3 2.5-3"/><path d="M2 15h12"/><path d="M14 15V8c0-3.3-2.7-6-6-6"/></svg>
@@ -1783,11 +1788,12 @@
               <strong>Premium</strong>Type
             </div>
           </div>
+          <button class="btn-primary" style="width:100%; margin-top:12px;" onclick="event.stopPropagation(); openBookingModal(0)">Book Now</button>
         </div>
       </div>
 
       <!-- Property 2 -->
-      <div class="prop-card reveal reveal-d2" onclick="openGallery(1)">
+      <div class="prop-card reveal reveal-d2" id="prop-card-1" onclick="openGallery(1)">
         <div class="prop-img-wrap">
           <img src="images/prop1/IMG_1855.jpeg" alt="Property 2" class="prop-img" />
           <div class="prop-badge">For Rent</div>
@@ -1796,12 +1802,12 @@
         <div class="prop-body">
           <div class="parking-tag">✓ Free Parking</div>
           <div class="prop-price">Contact for Price</div>
-          <div class="prop-name">Modern 3-Bedroom Suite</div>
+          <div class="prop-name">Property 2</div>
           <div class="prop-loc">📍 Eastleigh, UK</div>
           <div class="prop-specs">
             <div class="spec">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spec-icon"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
-              <strong>3</strong>BHK
+              <strong>Room No.</strong> 1, 2, 3
             </div>
             <div class="spec">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spec-icon"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-1C4.33 2.5 4 3 4 3c0 2 2 2 2 2"/><path d="M19 8c1.5 0 2.5 1.5 2.5 3V22H3v-3c0-1.5 1.5-3 2.5-3"/><path d="M2 15h12"/><path d="M14 15V8c0-3.3-2.7-6-6-6"/></svg>
@@ -1816,11 +1822,12 @@
               <strong>Premium</strong>Type
             </div>
           </div>
+          <button class="btn-primary" style="width:100%; margin-top:12px;" onclick="event.stopPropagation(); openBookingModal(1)">Book Now</button>
         </div>
       </div>
 
       <!-- Property 3 -->
-      <div class="prop-card reveal reveal-d3" onclick="openGallery(2)">
+      <div class="prop-card reveal reveal-d3" id="prop-card-2" onclick="openGallery(2)">
         <div class="prop-img-wrap">
           <img src="images/prop3/IMG_3401.jpeg" alt="Property 3" class="prop-img" />
           <div class="prop-badge">For Rent</div>
@@ -1829,12 +1836,12 @@
         <div class="prop-body">
           <div class="parking-tag">✓ Free Parking</div>
           <div class="prop-price">Contact for Price</div>
-          <div class="prop-name">Elegant Family Apartment</div>
+          <div class="prop-name">Property 3</div>
           <div class="prop-loc">📍 Eastleigh, UK</div>
           <div class="prop-specs">
             <div class="spec">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spec-icon"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
-              <strong>4</strong>BHK
+              <strong>Room No.</strong> 1, 2, 3, 4
             </div>
             <div class="spec">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spec-icon"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-1C4.33 2.5 4 3 4 3c0 2 2 2 2 2"/><path d="M19 8c1.5 0 2.5 1.5 2.5 3V22H3v-3c0-1.5 1.5-3 2.5-3"/><path d="M2 15h12"/><path d="M14 15V8c0-3.3-2.7-6-6-6"/></svg>
@@ -1849,11 +1856,12 @@
               <strong>Premium</strong>Type
             </div>
           </div>
+          <button class="btn-primary" style="width:100%; margin-top:12px;" onclick="event.stopPropagation(); openBookingModal(2)">Book Now</button>
         </div>
       </div>
 
       <!-- Property 4 -->
-      <div class="prop-card reveal reveal-d4" onclick="openGallery(3)">
+      <div class="prop-card reveal reveal-d4" id="prop-card-3" onclick="openGallery(3)">
         <div class="prop-img-wrap">
           <img src="images/prop4/IMG_4122.JPG.jpeg" alt="Property 4" class="prop-img" />
           <div class="prop-badge">For Rent</div>
@@ -1862,12 +1870,12 @@
         <div class="prop-body">
           <div class="parking-tag">✓ Free Parking</div>
           <div class="prop-price">Contact for Price</div>
-          <div class="prop-name">Contemporary City Flat</div>
+          <div class="prop-name">Property 4</div>
           <div class="prop-loc">📍 Eastleigh, UK</div>
           <div class="prop-specs">
             <div class="spec">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spec-icon"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
-              <strong>2</strong>BHK
+              <strong>Room No.</strong> 1, 2
             </div>
             <div class="spec">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spec-icon"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-1C4.33 2.5 4 3 4 3c0 2 2 2 2 2"/><path d="M19 8c1.5 0 2.5 1.5 2.5 3V22H3v-3c0-1.5 1.5-3 2.5-3"/><path d="M2 15h12"/><path d="M14 15V8c0-3.3-2.7-6-6-6"/></svg>
@@ -1882,6 +1890,7 @@
               <strong>Premium</strong>Type
             </div>
           </div>
+          <button class="btn-primary" style="width:100%; margin-top:12px;" onclick="event.stopPropagation(); openBookingModal(3)">Book Now</button>
         </div>
       </div>
 
@@ -2455,7 +2464,7 @@
   <script>
     const properties = [
       {
-        name: "Luxury 4-Bedroom House",
+        name: "Property 1",
         images: [
           "images/prop2/590213932.jpg", "images/prop2/590004298.jpg", "images/prop2/590209223.jpg",
           "images/prop2/590213972.jpg", "images/prop2/590214013.jpg", "images/prop2/590214071.jpg",
@@ -2463,7 +2472,7 @@
           "images/prop2/698516985.jpg", "images/prop2/698517270.jpg"
         ],
         about: [
-          { label: "Configuration", text: "4BHK Apartment" },
+          { label: "Configuration", text: "Room No. 1, 2, 3, 4" },
           { label: "Specifications", text: "1 Bath | 850 Sq.ft" },
           { label: "Status", text: "Fully Furnished" },
           { label: "Modern Suite", text: "Premium and efficient living space, fully furnished with all essentials for short or long term stays." }
@@ -2478,14 +2487,14 @@
         rating: ""
       },
       {
-        name: "Modern 3-Bedroom Suite",
+        name: "Property 2",
         images: [
           "images/prop1/IMG_1855.jpeg", "images/prop1/IMG_1856.jpeg", "images/prop1/IMG_1857.jpeg",
           "images/prop1/IMG_1858.jpeg", "images/prop1/IMG_1860.jpeg", "images/prop1/IMG_1862.jpeg",
           "images/prop1/IMG_1866.jpeg", "images/prop1/IMG_1867.jpeg"
         ],
         about: [
-          { label: "Configuration", text: "3BHK Apartment" },
+          { label: "Configuration", text: "Room No. 1, 2, 3" },
           { label: "Specifications", text: "1 Bath | 750 Sq.ft" },
           { label: "Status", text: "Fully Furnished" },
           { label: "Comfortable Accommodation", text: "Wilmer House in Eastleigh offers comfortable rooms with private entrances, parquet floors, and wardrobes." }
@@ -2499,14 +2508,14 @@
         rating: "Highly rated for cleanliness and value."
       },
       {
-        name: "Elegant Family Apartment",
+        name: "Property 3",
         images: [
           "images/prop3/IMG_3329.jpeg", "images/prop3/IMG_3331.jpeg", "images/prop3/IMG_3332.jpeg",
           "images/prop3/IMG_3335.jpeg", "images/prop3/IMG_3400.jpeg", "images/prop3/IMG_3401.jpeg",
           "images/prop3/IMG_3476.jpeg", "images/prop3/IMG_3479.jpeg"
         ],
         about: [
-          { label: "Configuration", text: "4BHK Apartment" },
+          { label: "Configuration", text: "Room No. 1, 2, 3, 4" },
           { label: "Specifications", text: "1 Bath | 850 Sq.ft" },
           { label: "Status", text: "Fully Furnished" },
           { label: "Spacious Living", text: "Large family home with multiple bedrooms and shared social spaces. Ideal for longer stays." }
@@ -2521,14 +2530,14 @@
         rating: ""
       },
       {
-        name: "Contemporary City Flat",
+        name: "Property 4",
         images: [
           "images/prop4/IMG_4116.JPG.jpeg", "images/prop4/IMG_4119.JPG.jpeg", "images/prop4/IMG_4120.JPG.jpeg",
           "images/prop4/IMG_4122.JPG.jpeg", "images/prop4/IMG_4124.JPG.jpeg", "images/prop4/IMG_4125.JPG.jpeg",
           "images/prop4/IMG_4127.JPG"
         ],
         about: [
-          { label: "Configuration", text: "2BHK Apartment" },
+          { label: "Configuration", text: "Room No. 1, 2" },
           { label: "Specifications", text: "1 Bath | 500 Sq.ft" },
           { label: "Status", text: "Fully Furnished" },
           { label: "Quiet Apartment", text: "Modern flat with a quiet environment, perfect for professionals or small families." }
@@ -2722,6 +2731,161 @@
       ENQUIRE
     </a>
   </div>
+
+  <!-- BOOKING MODAL -->
+  <div class="booking-modal" id="booking-modal" onclick="if(event.target===this) closeBookingModal()">
+    <div class="booking-content">
+      <button class="close-booking" onclick="closeBookingModal()">✕</button>
+      <div class="booking-header">
+        <p id="modal-prop-name">Property 1</p>
+        <h2>Book Your Stay</h2>
+        <div class="header-decoration"></div>
+      </div>
+      <div class="booking-body">
+        
+        <div class="section-label">Select Accommodation</div>
+        <div class="booking-type-grid">
+          <div class="type-option active" id="type-full" onclick="setBookingType('full')">
+            <span class="type-icon">🏡</span>
+            <span class="type-text">Entire Property</span>
+          </div>
+          <div class="type-option" id="type-rooms" onclick="document.getElementById('room-count').focus()">
+            <span class="type-icon">🛏️</span>
+            <select class="form-input room-select" id="room-count" onchange="setBookingType('rooms')">
+              <option value="0" disabled selected>Select Rooms...</option>
+              <option value="1">1 Room</option>
+              <option value="2">2 Rooms</option>
+              <option value="3">3 Rooms</option>
+              <option value="4">4 Rooms</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="section-label">Stay Details</div>
+        <div class="booking-type-grid">
+          <div class="form-group">
+            <label>Check-in</label>
+            <div class="input-with-icon">
+              <span class="input-icon">📅</span>
+              <input type="text" class="form-input" id="check-in" placeholder="Select check-in date" onchange="updatePrice()">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Check-out</label>
+            <div class="input-with-icon">
+              <span class="input-icon">📅</span>
+              <input type="text" class="form-input" id="check-out" placeholder="Select check-out date" onchange="updatePrice()">
+            </div>
+          </div>
+        </div>
+
+        <div class="section-label">Guest Information</div>
+        <div class="booking-type-grid">
+          <div class="form-group">
+            <label>Full Name</label>
+            <div class="input-with-icon">
+              <span class="input-icon">👤</span>
+              <input type="text" class="form-input" id="cust-name" placeholder="John Doe">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Guests</label>
+            <div class="input-with-icon">
+              <span class="input-icon">👥</span>
+              <select class="form-input" id="guest-count">
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+                <option value="5">5+ Guests</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-with-icon">
+            <span class="input-icon">✉️</span>
+            <input type="email" class="form-input" id="cust-email" placeholder="john@example.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <div class="input-with-icon">
+            <span class="input-icon">📞</span>
+            <input type="tel" class="form-input" id="cust-phone" placeholder="+44 7400 123456">
+          </div>
+        </div>
+
+        <!-- Payment Method Section -->
+        <div class="section-label" style="margin-top: 16px;">Payment Method</div>
+        <div class="booking-type-grid payment-methods">
+          <div class="type-option active" id="pay-online" onclick="setPaymentMethod('online')">
+            <span class="type-icon">💳</span>
+            <span class="type-text">Pay Online</span>
+          </div>
+          <div class="type-option" id="pay-cash" onclick="setPaymentMethod('cash')">
+            <span class="type-icon">💷</span>
+            <span class="type-text">Pay on Arrival</span>
+          </div>
+        </div>
+
+        <!-- Mock Card Details Form -->
+        <div class="card-details-form" id="card-form">
+          <div class="form-group">
+            <label>Card Number</label>
+            <div class="input-with-icon">
+              <span class="input-icon">🔒</span>
+              <input type="text" class="form-input" id="card-num" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)">
+            </div>
+          </div>
+          <div class="booking-type-grid" style="margin-top: 12px;">
+            <div class="form-group">
+              <label>Expiry Date</label>
+              <div class="input-with-icon">
+                <span class="input-icon">📅</span>
+                <input type="text" class="form-input" id="card-exp" placeholder="MM/YY" maxlength="5" oninput="formatExp(this)">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>CVC</label>
+              <div class="input-with-icon">
+                <span class="input-icon">🛡️</span>
+                <input type="text" class="form-input" id="card-cvc" placeholder="123" maxlength="4">
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top: 12px;">
+            <label>Billing Postcode</label>
+            <div class="input-with-icon">
+              <span class="input-icon">📍</span>
+              <input type="text" class="form-input" id="card-zip" placeholder="e.g. SW1A 1AA">
+            </div>
+          </div>
+        </div>
+
+        <div class="price-summary">
+          <div class="price-info">
+            <span class="label">Estimated Total</span>
+            <span class="sub-label">Includes taxes and fees</span>
+          </div>
+          <span class="amount" id="total-amount">£0</span>
+        </div>
+      </div>
+      <div class="booking-footer">
+        <button class="confirm-btn" onclick="confirmBooking()">
+          <span>Confirm Booking</span>
+          <span class="btn-icon">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="booking.js"></script>
 </body>
+
 
 </html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wilmer House | Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <h2>Admin Access</h2>
+        <p>Please enter your credentials to continue.</p>
+        
+        <form class="login-form" id="login-form">
+            <div class="form-group">
+                <input type="text" id="admin-id" placeholder="Admin ID" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="login-btn">Login to Dashboard</button>
+        </form>
+        <div id="error-msg" style="color: #ef4444; font-size: 0.85rem; margin-top: 15px; display: none;">
+            Invalid email or password. Please try again.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const adminId = document.getElementById('admin-id').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            // New Credentials
+            // ID: wilmerhouse.com
+            // Password: wilmer1234
+            
+            if (adminId === 'wilmerhouse.com' && password === 'wilmer1234') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                window.location.href = 'index.html';
+            } else {
+                errorMsg.style.display = 'block';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

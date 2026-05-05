@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wilmer House | Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="../config.js"></script>
+    <script>
+        // --- LOGIN PROTECTION ---
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        function switchView(view) {
+            document.getElementById('view-dash').style.display = (view === 'dash' ? 'block' : 'none');
+            document.getElementById('view-props').style.display = (view === 'props' ? 'block' : 'none');
+            document.getElementById('view-bookings').style.display = (view === 'bookings' ? 'block' : 'none');
+            document.getElementById('view-calendar').style.display = (view === 'calendar' ? 'block' : 'none');
+            
+            document.getElementById('menu-dash').classList.toggle('active', view === 'dash');
+            document.getElementById('menu-props').classList.toggle('active', view === 'props');
+            document.getElementById('menu-bookings').classList.toggle('active', view === 'bookings');
+            document.getElementById('menu-calendar').classList.toggle('active', view === 'calendar');
+
+            if (view === 'props') fetchProperties();
+            if (view === 'calendar') {
+                calState = 'properties'; // Reset state on tab switch
+                fetchCalendarData();
+            }
+            if (view === 'bookings' || view === 'dash') fetchData();
+        }
+    </script>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</div>
+        <div class="sidebar-brand">
+            <img src="../images/logo.png" width="35" style="border-radius: 8px;">
+            <span>Wilmer Admin</span>
+        </div>
+        <ul class="sidebar-menu">
+            <a href="#" class="menu-item active" id="menu-dash" onclick="switchView('dash')">📊 <span>Dashboard</span></a>
+            <a href="#" class="menu-item" id="menu-props" onclick="switchView('props')">🏠 <span>Properties</span></a>
+            <a href="#" class="menu-item" id="menu-bookings" onclick="switchView('bookings')">📋 <span>Bookings</span></a>
+            <a href="#" class="menu-item" id="menu-calendar" onclick="switchView('calendar')">📅 <span>Calendar</span></a>
+            <a href="#" class="menu-item" id="menu-reports" onclick="switchView('reports')">📈 <span>Reports</span></a>
+            <a href="../index.html" class="menu-item">🌐 <span>View Site</span></a>
+            <li class="menu-item" onclick="logout()" style="margin-top: 40px; color: #ef4444;">
+                <span>🚪</span> Logout
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <!-- DASHBOARD VIEW -->
+        <div id="view-dash">
+            <div class="header">
+                <h1>Business Overview</h1>
+                <button onclick="fetchData()" style="padding:10px 20px; border-radius:10px; border:none; background:#3b82f6; color:#fff; cursor:pointer;">🔄 Refresh Data</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-value" id="stat-revenue">£0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Bookings</div>
+                    <div class="stat-value" id="stat-bookings">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Payments</div>
+                    <div class="stat-value" id="stat-pending">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Stays</div>
+                    <div class="stat-value" id="stat-active">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card" style="margin-bottom: 40px;">
+                <div class="table-header">
+                    <h2>Revenue Analytics</h2>
+                </div>
+                <div class="card" style="margin-top: 30px; padding: 25px;">
+                    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                        <div style="flex: 2; min-width: 300px;">
+                            <h3 style="margin-top:0; margin-bottom: 20px; font-size: 1.1rem; color: #1e293b;">Revenue Trend (Last 7 Days)</h3>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="margin-top:0; margin-bottom: 20px; font-size: 1.1rem; color: #1e293b;">Property Performance</h3>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="propertyRevenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h2>Recent Bookings</h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking Date</th>
+                            <th>Property</th>
+                            <th>Guest Details</th>
+                            <th>Stay Dates</th>
+                            <th>Total Price</th>
+                            <th>Payment Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookings-table-body">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PROPERTIES VIEW -->
+        <div id="view-props" style="display: none;">
+            <div class="header">
+                <h1>Manage Properties</h1>
+                <button class="btn-add" onclick="openPropertyModal()">
+                    <span>➕</span> Add Property
+                </button>
+            </div>
+            <div class="stats-grid" id="properties-grid">
+                <!-- Properties will be loaded here -->
+            </div>
+        </div>
+
+        <!-- BOOKINGS VIEW -->
+        <div id="view-bookings" style="display: none;">
+            <div class="header">
+                <h1>All Bookings</h1>
+                <input type="text" id="booking-search" placeholder="Search by name, email or phone..." 
+                       style="padding: 10px 15px; border-radius: 10px; border: 1px solid #ddd; width: 300px;" 
+                       onkeyup="filterBookings()">
+            </div>
+            <div class="data-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking Date</th>
+                            <th>Property</th>
+                            <th>Guest Details</th>
+                            <th>Stay Dates</th>
+                            <th>Total Price</th>
+                            <th>Payment Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-bookings-table-body">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CALENDAR VIEW -->
+        <div id="view-calendar" style="display: none;">
+            <div class="header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button id="cal-back-btn" onclick="goBackCalendar()" style="display: none; padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer;">⬅ Back</button>
+                    <h1 id="calendar-title">Select Property</h1>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; background: #fff; padding: 5px 15px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Check Availability:</div>
+                    <input type="date" id="search-checkin" style="padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.85rem;">
+                    <span style="color: #cbd5e1;">to</span>
+                    <input type="date" id="search-checkout" style="padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.85rem;">
+                    <button onclick="findAvailability()" style="padding: 6px 15px; background: #3b82f6; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Check Now</button>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="seed-btn" onclick="seedSampleData()" style="display:none; padding:10px 15px; border-radius:10px; border:none; background:#8b5cf6; color:#fff; cursor:pointer; font-weight:600;">✨ Seed Sample Data</button>
+                    <button onclick="exportToExcel()" style="padding:10px 15px; border-radius:10px; border:none; background:#10b981; color:#fff; cursor:pointer; font-weight:600;">📥 Export Excel</button>
+                    <button onclick="document.getElementById('excel-import-input').click()" style="padding:10px 15px; border-radius:10px; border:none; background:#0ea5e9; color:#fff; cursor:pointer; font-weight:600;">📤 Import Excel</button>
+                    <input type="file" id="excel-import-input" accept=".xlsx, .xls" style="display: none;" onchange="handleExcelUpload(event)">
+                    <button onclick="exportToPDF()" style="padding:10px 15px; border-radius:10px; border:none; background:#ef4444; color:#fff; cursor:pointer; font-weight:600;">📄 PDF Report</button>
+                    <button onclick="generateTestExcelData()" style="padding:10px 15px; border-radius:10px; border:none; background:#8b5cf6; color:#fff; cursor:pointer; font-weight:600;">🎁 Download Test Excel</button>
+                    <button onclick="fetchCalendarData()" style="padding:10px 20px; border-radius:10px; border:none; background:#3b82f6; color:#fff; cursor:pointer; font-weight:600;">🔄 Refresh</button>
+                </div>
+            </div>
+            <div id="calendar-container">
+                <!-- Selection Grid or Gantt Chart will be injected here -->
+                <div id="calendar-selection-grid" class="selection-grid"></div>
+                <div id="gantt-root" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT BOOKING MODAL -->
+    <div class="edit-modal-overlay" id="edit-modal">
+        <div class="edit-modal">
+            <div class="edit-modal-header">
+                <h2>Edit Booking</h2>
+                <button class="edit-close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="edit-modal-body">
+                <form id="edit-booking-form" onsubmit="submitEditBooking(event)">
+                    <input type="hidden" id="edit-id">
+                    
+                    <div class="edit-form-group">
+                        <label>Property</label>
+                        <select id="edit-property" required>
+                            <option value="Property 1">Property 1</option>
+                            <option value="Property 2">Property 2</option>
+                            <option value="Property 3">Property 3</option>
+                            <option value="Property 4">Property 4</option>
+                        </select>
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="edit-name" required>
+                    </div>
+
+                    <div class="edit-form-group" style="display: flex; gap: 12px;">
+                        <div style="flex: 1;">
+                            <label>Check-in</label>
+                            <input type="date" id="edit-checkin" required>
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Check-out</label>
+                            <input type="date" id="edit-checkout" required>
+                        </div>
+                    </div>
+
+                    <div class="edit-form-group" style="display: flex; gap: 12px;">
+                        <div style="flex: 1;">
+                            <label>Email</label>
+                            <input type="email" id="edit-email">
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Phone</label>
+                            <input type="text" id="edit-phone">
+                        </div>
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label>Total Price (£)</label>
+                        <input type="number" id="edit-price" step="0.01" required>
+                    </div>
+                </form>
+            </div>
+            <div class="edit-modal-footer">
+                <button class="edit-btn-cancel" type="button" onclick="closeEditModal()">Cancel</button>
+                <button class="edit-btn-save" type="submit" form="edit-booking-form">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ADD BOOKING MODAL -->
+    <div id="add-modal" class="edit-modal-overlay">
+        <div class="edit-modal">
+            <div class="edit-modal-header">
+                <h2>New Booking</h2>
+                <button onclick="closeAddModal()" style="background:none; border:none; color:#64748b; cursor:pointer; font-size:1.2rem;">✕</button>
+            </div>
+            <form id="add-booking-form" onsubmit="submitAddBooking(event)">
+                <div class="edit-modal-body">
+                    <div class="edit-form-group">
+                        <label>Property</label>
+                        <input type="text" id="add-property" readonly style="background:#f1f5f9;">
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Room Number</label>
+                        <input type="number" id="add-room" readonly style="background:#f1f5f9;">
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Booking Type</label>
+                        <select id="add-type" onchange="toggleMaintenanceMode(this.value)">
+                            <option value="guest">Guest Booking</option>
+                            <option value="maintenance">Room Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="edit-form-group" id="guest-name-group">
+                        <label>Guest Name</label>
+                        <input type="text" id="add-name" placeholder="Enter guest name">
+                    </div>
+                    <div class="edit-form-group" style="display: flex; gap: 12px;">
+                        <div style="flex: 1;">
+                            <label>Check-in</label>
+                            <input type="date" id="add-checkin" required>
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Check-out</label>
+                            <input type="date" id="add-checkout" required>
+                        </div>
+                    </div>
+                    <div class="edit-form-group" style="display: flex; gap: 12px;">
+                        <div style="flex: 1;">
+                            <label>Email</label>
+                            <input type="email" id="add-email" placeholder="email@example.com">
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Phone</label>
+                            <input type="text" id="add-phone" placeholder="WhatsApp number">
+                        </div>
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Total Price (£)</label>
+                        <input type="number" id="add-price" required step="0.01">
+                    </div>
+                </div>
+                <div class="edit-modal-footer">
+                    <button type="button" onclick="closeAddModal()" class="edit-btn-cancel">Cancel</button>
+                    <button type="submit" class="edit-btn-save">Save Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- AVAILABILITY RESULTS MODAL -->
+    <div id="availability-modal" class="edit-modal-overlay">
+        <div class="edit-modal" style="max-width: 700px;">
+            <div class="edit-modal-header">
+                <h2>Available Rooms</h2>
+                <button onclick="closeAvailabilityModal()" style="background:none; border:none; color:#64748b; cursor:pointer; font-size:1.2rem;">✕</button>
+            </div>
+            <div class="edit-modal-body" id="availability-results">
+                <!-- Results will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PROPERTY MANAGEMENT MODAL -->
+    <div class="prop-modal-overlay" id="prop-modal">
+        <div class="prop-modal">
+            <div class="edit-modal-header">
+                <h2 id="prop-modal-title">Add Property</h2>
+                <button class="edit-close-btn" onclick="closePropertyModal()">&times;</button>
+            </div>
+            
+            <div class="modal-tabs">
+                <button class="tab-btn active" onclick="switchTab('tab-general')">General</button>
+                <button class="tab-btn" onclick="switchTab('tab-pricing')">Pricing</button>
+                <button class="tab-btn" onclick="switchTab('tab-media')">Media</button>
+                <button class="tab-btn" onclick="switchTab('tab-amenities')">Amenities</button>
+            </div>
+
+            <div class="edit-modal-body" style="padding: 0;">
+                <form id="property-form" onsubmit="saveProperty(event)">
+                    <input type="hidden" id="prop-id">
+                    
+                    <!-- Tab: General -->
+                    <div id="tab-general" class="tab-content active">
+                        <div class="edit-form-group">
+                            <label>Property Name</label>
+                            <input type="text" id="prop-name" placeholder="e.g. Luxury Apartment" required>
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Location</label>
+                            <input type="text" id="prop-location" placeholder="e.g. Eastleigh, UK" required>
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Description</label>
+                            <textarea id="prop-desc" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; height:100px;"></textarea>
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Status</label>
+                            <select id="prop-status">
+                                <option value="true">Active (Visible on Site)</option>
+                                <option value="false">Inactive (Hidden)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Pricing -->
+                    <div id="tab-pricing" class="tab-content">
+                        <div class="edit-form-group">
+                            <label>Full Property Price (£)</label>
+                            <input type="number" id="prop-price-full" step="0.01" required>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="edit-form-group">
+                                <label>Room 1 Price (£)</label>
+                                <input type="number" id="prop-price-r1" step="0.01">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Room 2 Price (£)</label>
+                                <input type="number" id="prop-price-r2" step="0.01">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Room 3 Price (£)</label>
+                                <input type="number" id="prop-price-r3" step="0.01">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Room 4 Price (£)</label>
+                                <input type="number" id="prop-price-r4" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Media -->
+                    <div id="tab-media" class="tab-content">
+                        <div class="edit-form-group">
+                            <label>Image URLs (One per line)</label>
+                            <textarea id="prop-images" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; height:150px;"></textarea>
+                        </div>
+                        <p style="font-size: 0.75rem; color: #64748b;">The first image will be used as the thumbnail.</p>
+                    </div>
+
+                    <!-- Tab: Amenities -->
+                    <div id="tab-amenities" class="tab-content">
+                        <div class="amenity-grid">
+                            <label class="amenity-item"><input type="checkbox" name="amenity" value="WiFi"> WiFi</label>
+                            <label class="amenity-item"><input type="checkbox" name="amenity" value="Parking"> Parking</label>
+                            <label class="amenity-item"><input type="checkbox" name="amenity" value="Kitchen"> Kitchen</label>
+                            <label class="amenity-item"><input type="checkbox" name="amenity" value="TV"> Smart TV</label>
+                            <label class="amenity-item"><input type="checkbox" name="amenity" value="Heating"> Heating</label>
+                            <label class="amenity-item"><input type="checkbox" name="amenity" value="Washer"> Washer</label>
+                            <label class="amenity-item"><input type="checkbox" name="amenity" value="Workspace"> Workspace</label>
+                            <label class="amenity-item"><input type="checkbox" name="amenity" value="Security"> Security Cam</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="edit-modal-footer">
+                <button class="edit-btn-cancel" type="button" onclick="closePropertyModal()">Cancel</button>
+                <button class="edit-btn-save" type="submit" form="property-form" id="btn-save-prop">Save Property</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = CONFIG.SUPABASE_URL;
+        const SUPABASE_ANON_KEY = CONFIG.SUPABASE_ANON_KEY;
+
+        let globalBookings = [];
+        let globalProperties = [];
+
+        async function fetchData() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings?select=*&order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                const data = await response.json();
+                globalBookings = data;
+                renderDashboard(data);
+                renderAllBookings(data);
+            } catch (error) {
+                console.error("Error fetching bookings:", error);
+            }
+        }
+
+        function renderDashboard(bookings) {
+            let totalRevenue = 0;
+            bookings.forEach(b => totalRevenue += b.total_price || 0);
+            
+            document.getElementById('stat-revenue').textContent = '£' + totalRevenue.toLocaleString();
+            document.getElementById('stat-bookings').textContent = bookings.length;
+            document.getElementById('stat-pending').textContent = bookings.filter(b => b.payment_status === 'Pending').length;
+            
+            renderChart(bookings);
+
+            const tbody = document.getElementById('bookings-table-body');
+            tbody.innerHTML = '';
+            
+            bookings.forEach(b => {
+                const bookingDate = new Date(b.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+                
+                let payBadgeClass = 'status-pending';
+                let payStatus = b.payment_status || 'Pending';
+                if (payStatus.toLowerCase() === 'paid') payBadgeClass = 'status-confirmed';
+                
+                // Add a small tag if it's cash on arrival
+                const isCash = b.booking_status && b.booking_status.includes('Arrival');
+                const cashTag = isCash ? '<br><span style="font-size:10px; color:#64748b; margin-top:4px; display:inline-block;">Pay on Arrival</span>' : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-size:0.85rem; color:#64748b;">${bookingDate}</td>
+                    <td><strong>${b.property_name || 'N/A'}</strong></td>
+                    <td>
+                        <strong>${b.customer_name}</strong><br>
+                        <span style="font-size:0.8rem; color:#64748b;">📧 ${b.customer_email || 'N/A'}</span><br>
+                        <span style="font-size:0.8rem; color:#64748b;">📞 ${b.customer_phone || 'N/A'}</span>
+                    </td>
+                    <td><span style="background:#f1f5f9; padding:4px 8px; border-radius:6px; font-size:0.85rem; font-weight:600;">${b.check_in}</span><br><span style="font-size:0.8rem; color:#64748b; margin-left:8px;">to</span><br><span style="background:#f1f5f9; padding:4px 8px; border-radius:6px; font-size:0.85rem; font-weight:600;">${b.check_out}</span></td>
+                    <td style="font-weight:700; color:#1e293b; font-size:1.1rem;">£${b.total_price}</td>
+                    <td>
+                        <span class="status-badge ${payBadgeClass}">${payStatus}</span>
+                        ${cashTag}
+                    </td>
+                    <td>
+                        <select onchange="handleAction('${b.id}', this.value); this.value=''" style="padding:4px; border-radius:4px; border:1px solid #ddd; font-size:0.8rem; background:#fff;">
+                            <option value="" disabled selected>Actions...</option>
+                            <option value="edit">Edit Details</option>
+                            <option value="paid">Mark Paid</option>
+                            <option value="cancelled">Cancel</option>
+                        </select>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterBookings() {
+            const query = document.getElementById('booking-search').value.toLowerCase();
+            const filtered = globalBookings.filter(b => 
+                (b.customer_name && b.customer_name.toLowerCase().includes(query)) ||
+                (b.customer_email && b.customer_email.toLowerCase().includes(query)) ||
+                (b.customer_phone && b.customer_phone.toLowerCase().includes(query)) ||
+                (b.property_name && b.property_name.toLowerCase().includes(query))
+            );
+            renderAllBookings(filtered);
+        }
+
+        function renderAllBookings(bookingsList) {
+            const tbody = document.getElementById('all-bookings-table-body');
+            tbody.innerHTML = '';
+            
+            bookingsList.forEach(b => {
+                const bookingDate = new Date(b.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+                
+                let payBadgeClass = 'status-pending';
+                let payStatus = b.payment_status || 'Pending';
+                if (payStatus.toLowerCase() === 'paid') payBadgeClass = 'status-confirmed';
+                
+                const isCash = b.booking_status && b.booking_status.includes('Arrival');
+                const cashTag = isCash ? '<br><span style="font-size:10px; color:#64748b; margin-top:4px; display:inline-block;">Pay on Arrival</span>' : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-size:0.85rem; color:#64748b;">${bookingDate}</td>
+                    <td><strong>${b.property_name || 'N/A'}</strong></td>
+                    <td>
+                        <strong>${b.customer_name}</strong><br>
+                        <span style="font-size:0.8rem; color:#64748b;">📧 ${b.customer_email || 'N/A'}</span><br>
+                        <span style="font-size:0.8rem; color:#64748b;">📞 ${b.customer_phone || 'N/A'}</span>
+                    </td>
+                    <td><span style="background:#f1f5f9; padding:4px 8px; border-radius:6px; font-size:0.85rem; font-weight:600;">${b.check_in}</span><br><span style="font-size:0.8rem; color:#64748b; margin-left:8px;">to</span><br><span style="background:#f1f5f9; padding:4px 8px; border-radius:6px; font-size:0.85rem; font-weight:600;">${b.check_out}</span></td>
+                    <td style="font-weight:700; color:#1e293b; font-size:1.1rem;">£${b.total_price}</td>
+                    <td>
+                        <span class="status-badge ${payBadgeClass}">${payStatus}</span>
+                        ${cashTag}
+                    </td>
+                    <td>
+                        <select onchange="handleAction('${b.id}', this.value); this.value=''" style="padding:4px; border-radius:4px; border:1px solid #ddd; font-size:0.8rem; background:#fff;">
+                            <option value="" disabled selected>Actions...</option>
+                            <option value="edit">Edit Details</option>
+                            <option value="paid">Mark Paid</option>
+                            <option value="cancelled">Cancel</option>
+                        </select>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        let myChart = null;
+        let propertyChart = null;
+        function renderChart(bookings) {
+            const ctxTrend = document.getElementById('revenueChart').getContext('2d');
+            const ctxProp = document.getElementById('propertyRevenueChart').getContext('2d');
+            
+            // 1. TREND CHART (Line)
+            const revenueMap = {};
+            bookings.forEach(b => {
+                const date = b.created_at ? b.created_at.split('T')[0] : b.check_in;
+                revenueMap[date] = (revenueMap[date] || 0) + (b.total_price || 0);
+            });
+
+            const sortedDates = Object.keys(revenueMap).sort().slice(-7);
+            const values = sortedDates.map(d => revenueMap[d]);
+
+            if (myChart) myChart.destroy();
+            myChart = new Chart(ctxTrend, {
+                type: 'line',
+                data: {
+                    labels: sortedDates,
+                    datasets: [{
+                        label: 'Revenue (£)',
+                        data: values,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        async function fetchProperties() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/properties?select=*&order=name.asc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                globalProperties = await response.json();
+                renderProperties(globalProperties);
+            } catch (error) {
+                console.error("Error fetching properties:", error);
+            }
+        }
+
+        function renderProperties(props) {
+            const grid = document.getElementById('properties-grid');
+            grid.innerHTML = '';
+            
+            if (props.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px; background: #f8fafc; border-radius: 20px; border: 2px dashed #e2e8f0;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🏠</div>
+                        <h3 style="color: #1e293b; margin-bottom: 10px;">No Properties Yet</h3>
+                        <p style="color: #64748b; margin-bottom: 24px;">Start by adding your first property to manage prices, images, and amenities.</p>
+                        <button class="btn-add" onclick="openPropertyModal()" style="margin: 0 auto;">➕ Add Your First Property</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            props.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'property-card';
+                
+                const images = (p.image_url || '').split('\n').filter(x => x.trim());
+                const thumb = images[0] || 'https://via.placeholder.com/400x250?text=No+Image';
+                const isActive = p.is_active !== false;
+                const statusLabel = isActive ? 'Active' : 'Inactive';
+                const statusClass = isActive ? 'badge-active' : 'badge-inactive';
+                
+                card.innerHTML = `
+                    <div class="property-img-wrap">
+                        <img src="${thumb}" alt="${p.name}">
+                        <div class="property-badge ${statusClass}">${statusLabel}</div>
+                    </div>
+                    <div class="property-info">
+                        <div class="property-name">${p.name}</div>
+                        <div class="property-location">📍 ${p.location || 'N/A'}</div>
+                        
+                        <div class="property-prices">
+                            <div class="price-item"><span>Full Property:</span> <strong>£${p.full_property_price}</strong></div>
+                            ${p.room1_price ? `<div class="price-item"><span>Room 1:</span> <strong>£${p.room1_price}</strong></div>` : ''}
+                        </div>
+                        
+                        <div class="property-actions">
+                            <button class="btn-edit-prop" onclick="openPropertyModal('${p.id}')">Edit</button>
+                            <button class="btn-duplicate" onclick="duplicateProperty('${p.id}')" title="Copy Property">Copy</button>
+                            <button class="btn-delete-prop" onclick="deleteProperty('${p.id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function openPropertyModal(id = null) {
+            const form = document.getElementById('property-form');
+            form.reset();
+            document.getElementById('prop-id').value = '';
+            document.getElementById('prop-modal-title').textContent = 'Add Property';
+            document.getElementById('btn-save-prop').textContent = 'Save Property';
+            switchTab('tab-general');
+
+            if (id) {
+                const p = globalProperties.find(x => x.id == id);
+                if (p) {
+                    document.getElementById('prop-id').value = p.id;
+                    document.getElementById('prop-name').value = p.name;
+                    document.getElementById('prop-location').value = p.location || '';
+                    document.getElementById('prop-images').value = p.image_url || '';
+                    document.getElementById('prop-price-full').value = p.full_property_price || 0;
+                    document.getElementById('prop-price-r1').value = p.room1_price || '';
+                    document.getElementById('prop-price-r2').value = p.room2_price || '';
+                    document.getElementById('prop-price-r3').value = p.room3_price || '';
+                    document.getElementById('prop-price-r4').value = p.room4_price || '';
+                    document.getElementById('prop-desc').value = p.description || '';
+                    document.getElementById('prop-status').value = (p.is_active !== false).toString();
+                    
+                    // Set amenities
+                    const amenities = (p.amenities || '').split(',');
+                    document.querySelectorAll('input[name="amenity"]').forEach(cb => {
+                        cb.checked = amenities.includes(cb.value);
+                    });
+
+                    document.getElementById('prop-modal-title').textContent = 'Edit Property';
+                    document.getElementById('btn-save-prop').textContent = 'Update Property';
+                }
+            }
+            
+            document.getElementById('prop-modal').classList.add('open');
+        }
+
+        function duplicateProperty(id) {
+            const p = globalProperties.find(x => x.id == id);
+            if (!p) return;
+            
+            openPropertyModal(); // Open as "Add"
+            document.getElementById('prop-modal-title').textContent = 'Duplicate: ' + p.name;
+            document.getElementById('prop-name').value = p.name + ' (Copy)';
+            document.getElementById('prop-location').value = p.location || '';
+            document.getElementById('prop-images').value = p.image_url || '';
+            document.getElementById('prop-price-full').value = p.full_property_price || 0;
+            document.getElementById('prop-price-r1').value = p.room1_price || '';
+            document.getElementById('prop-price-r2').value = p.room2_price || '';
+            document.getElementById('prop-price-r3').value = p.room3_price || '';
+            document.getElementById('prop-price-r4').value = p.room4_price || '';
+            document.getElementById('prop-desc').value = p.description || '';
+            
+            const amenities = (p.amenities || '').split(',');
+            document.querySelectorAll('input[name="amenity"]').forEach(cb => {
+                cb.checked = amenities.includes(cb.value);
+            });
+        }
+
+        function closePropertyModal() {
+            document.getElementById('prop-modal').classList.remove('open');
+        }
+
+        async function saveProperty(event) {
+            event.preventDefault();
+            const id = document.getElementById('prop-id').value;
+            
+            const selectedAmenities = Array.from(document.querySelectorAll('input[name="amenity"]:checked')).map(cb => cb.value);
+
+            const propData = {
+                name: document.getElementById('prop-name').value,
+                location: document.getElementById('prop-location').value,
+                image_url: document.getElementById('prop-images').value,
+                full_property_price: parseFloat(document.getElementById('prop-price-full').value),
+                room1_price: document.getElementById('prop-price-r1').value ? parseFloat(document.getElementById('prop-price-r1').value) : null,
+                room2_price: document.getElementById('prop-price-r2').value ? parseFloat(document.getElementById('prop-price-r2').value) : null,
+                room3_price: document.getElementById('prop-price-r3').value ? parseFloat(document.getElementById('prop-price-r3').value) : null,
+                room4_price: document.getElementById('prop-price-r4').value ? parseFloat(document.getElementById('prop-price-r4').value) : null,
+                description: document.getElementById('prop-desc').value,
+                is_active: document.getElementById('prop-status').value === 'true',
+                amenities: selectedAmenities.join(',')
+            };
+
+            const btn = document.getElementById('btn-save-prop');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                let url = `${SUPABASE_URL}/rest/v1/properties`;
+                let method = 'POST';
+                
+                if (id) {
+                    url += `?id=eq.${id}`;
+                    method = 'PATCH';
+                }
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(propData)
+                });
+
+                if (response.ok) {
+                    alert("Property saved successfully!");
+                    closePropertyModal();
+                    fetchProperties();
+                } else {
+                    throw new Error("Failed to save property");
+                }
+            } catch (error) {
+                alert("Error saving property.");
+                console.error(error);
+            } finally {
+                btn.textContent = 'Save Property';
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteProperty(id) {
+            if (!confirm("Are you sure you want to delete this property? This cannot be undone.")) return;
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/properties?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (response.ok) {
+                    alert("Property deleted!");
+                    fetchProperties();
+                } else {
+                    throw new Error("Delete failed");
+                }
+            } catch (error) {
+                alert("Error deleting property.");
+                console.error(error);
+            }
+        }
+
+        async function updateBookingStatus(id, action) {
+            let updateData = {};
+            if (action === 'paid') {
+                updateData = { payment_status: 'Paid', booking_status: 'Confirmed (Paid)' };
+            } else if (action === 'cancelled') {
+                if(!confirm("Are you sure you want to cancel this booking?")) return;
+                updateData = { payment_status: 'Cancelled', booking_status: 'Cancelled' };
+            } else {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings?id=eq.${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (response.ok) {
+                    alert("Booking updated successfully!");
+                    fetchData(); // Refresh table
+                } else {
+                    throw new Error("Update failed");
+                }
+            } catch (error) {
+                alert("Failed to update booking.");
+                console.error(error);
+            }
+        }
+
+        let calState = 'properties'; // 'properties', 'rooms', 'calendar'
+        let calSelectedProp = null;
+        let calSelectedRoom = null;
+        let calCurrentMonth = new Date().getMonth();
+        let calCurrentYear = new Date().getFullYear();
+
+        async function fetchCalendarData() {
+            const grid = document.getElementById('calendar-selection-grid');
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">⏳ Loading properties...</div>';
+            grid.style.display = 'block';
+
+            try {
+                const pRes = await fetch(`${SUPABASE_URL}/rest/v1/properties?select=*`, { 
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } 
+                });
+                if (!pRes.ok) throw new Error("Database connection failed");
+                globalProperties = await pRes.json();
+                
+                // If empty, we can't show boxes.
+                if (!globalProperties || globalProperties.length === 0) {
+                    console.log("Using Fallback Properties (Demo Mode)");
+                    globalProperties = [
+                        { name: "Stree-20", location: "Eastleigh", room1_price: 60, room2_price: 60, room3_price: 60, room4_price: 60, image_url: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80" },
+                        { name: "Cable Street", location: "Southampton", room1_price: 50, room2_price: 50, room3_price: 50, room4_price: null, image_url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=80" },
+                        { name: "Street 22", location: "Winchester", room1_price: 70, room2_price: 70, room3_price: 70, room4_price: 70, image_url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80" },
+                        { name: "Flat", location: "London", room1_price: 100, room2_price: 100, room3_price: null, room4_price: null, image_url: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80" }
+                    ];
+                }
+
+                const bRes = await fetch(`${SUPABASE_URL}/rest/v1/bookings?select=*&order=check_in.asc`, { 
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } 
+                });
+                globalBookings = await bRes.json();
+                if (!globalBookings) globalBookings = [];
+                
+                renderCalendarStep();
+            } catch (err) {
+                console.error("Calendar Data Error:", err);
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #ef4444;">❌ Error loading data. Please check your internet connection and try again.</div>`;
+            }
+        }
+
+        function renderCalendarStep() {
+            const grid = document.getElementById('calendar-selection-grid');
+            const gantt = document.getElementById('gantt-root');
+            const title = document.getElementById('calendar-title');
+            const backBtn = document.getElementById('cal-back-btn');
+            const seedBtn = document.getElementById('seed-btn');
+
+            grid.innerHTML = '';
+            grid.style.display = 'none';
+            gantt.style.display = 'none';
+            backBtn.style.display = calState === 'properties' ? 'none' : 'block';
+            seedBtn.style.display = (calState === 'properties' && (!globalProperties || globalProperties.length === 0)) ? 'block' : 'none';
+
+            if (calState === 'properties') {
+                title.textContent = "Select Property";
+                grid.style.display = 'grid';
+                
+                if (!globalProperties || globalProperties.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">🏠 No properties found. Please add a property first.</div>';
+                    return;
+                }
+
+                globalProperties.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'selection-card';
+                    card.onclick = () => { calSelectedProp = p; calState = 'rooms'; renderCalendarStep(); };
+                    card.innerHTML = `
+                        <img src="${p.image_url || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80'}" alt="${p.name}">
+                        <div class="card-info" style="padding: 15px;">
+                            <h3 style="margin:0 0 5px 0;">${p.name}</h3>
+                            <p style="margin:0; font-size:0.9rem; color:#64748b;">📍 ${p.location}</p>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } 
+            else if (calState === 'rooms') {
+                title.textContent = `${calSelectedProp.name} | Select Room`;
+                grid.style.display = 'grid';
+                const roomImages = [
+                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80"
+                ];
+                for (let i = 1; i <= 4; i++) {
+                    const price = calSelectedProp[`room${i}_price`];
+                    if (price === undefined || price === null) continue;
+
+                    const card = document.createElement('div');
+                    card.className = 'selection-card';
+                    card.onclick = () => { calSelectedRoom = i; calState = 'calendar'; renderCalendarStep(); };
+                    card.innerHTML = `
+                        <img src="${roomImages[i-1]}" alt="Room ${i}">
+                        <div class="card-info" style="padding: 15px;">
+                            <h3 style="margin:0 0 5px 0;">Room ${i}</h3>
+                            <p style="margin:0; font-size:0.9rem; color:#64748b;">Price: £${price}</p>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            } 
+            else if (calState === 'calendar') {
+                title.textContent = `${calSelectedProp.name} | Room ${calSelectedRoom}`;
+                gantt.style.display = 'block';
+                renderRoomCalendarGrid(calSelectedProp, globalBookings, calSelectedRoom);
+            }
+        }
+
+        function goBackCalendar() {
+            if (calState === 'calendar') calState = 'rooms';
+            else if (calState === 'rooms') calState = 'properties';
+            renderCalendarStep();
+        }
+
+        function changeMonth(delta) {
+            calCurrentMonth += delta;
+            if (calCurrentMonth < 0) {
+                calCurrentMonth = 11;
+                calCurrentYear--;
+            } else if (calCurrentMonth > 11) {
+                calCurrentMonth = 0;
+                calCurrentYear++;
+            }
+            renderRoomCalendarGrid(calSelectedProp, globalBookings, calSelectedRoom);
+        }
+
+        function renderRoomCalendarGrid(prop, bookings, roomNum) {
+            const root = document.getElementById('gantt-root');
+            
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const daysInMonth = new Date(calCurrentYear, calCurrentMonth + 1, 0).getDate();
+            const firstDayIndex = new Date(calCurrentYear, calCurrentMonth, 1).getDay();
+            
+            let propBookings = bookings.filter(b => {
+                const matchProp = b.property_name === prop.name;
+                // Workaround: Extract room number from booking_status if room_number column is missing
+                let bRoom = b.room_number;
+                if (!bRoom && b.booking_status && b.booking_status.includes('Room:')) {
+                    const parts = b.booking_status.split('|')[0].trim();
+                    bRoom = parts.replace('Room:', '');
+                }
+                return matchProp && (parseInt(bRoom || 1) === parseInt(roomNum));
+            });
+            let totalProfit = propBookings.reduce((sum, b) => sum + (b.total_price || 0), 0);
+
+            let html = `
+                <div style="display:flex; gap:20px; padding: 15px 20px; background:#f8fafc; border-bottom:1px solid #ddd; border-radius:15px 15px 0 0;">
+                    <div style="background:#fff; padding:10px 20px; border-radius:12px; border:1px solid #e2e8f0;">
+                        <div style="font-size:0.7rem; color:#64748b; text-transform:uppercase;">Room Revenue</div>
+                        <div style="font-size:1.4rem; font-weight:700; color:#10b981;">£${totalProfit.toLocaleString()}</div>
+                    </div>
+                    <div style="background:#fff; padding:10px 20px; border-radius:12px; border:1px solid #e2e8f0;">
+                        <div style="font-size:0.7rem; color:#64748b; text-transform:uppercase;">Active Bookings</div>
+                        <div style="font-size:1.4rem; font-weight:700; color:#3b82f6;">${propBookings.length}</div>
+                    </div>
+                </div>
+
+                <div class="calendar-grid-container">
+                    <div class="calendar-grid-header">
+                        <button class="calendar-nav-btn" onclick="changeMonth(-1)">❮</button>
+                        <h2>${monthNames[calCurrentMonth]} ${calCurrentYear}</h2>
+                        <button class="calendar-nav-btn" onclick="changeMonth(1)">❯</button>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="day-name">Sun</div><div class="day-name">Mon</div><div class="day-name">Tue</div>
+                        <div class="day-name">Wed</div><div class="day-name">Thu</div><div class="day-name">Fri</div>
+                        <div class="day-name">Sat</div>
+            `;
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                html += `<div class="calendar-day empty"></div>`;
+            }
+
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const checkDate = new Date(calCurrentYear, calCurrentMonth, day);
+                checkDate.setHours(0,0,0,0);
+
+                let bookingFound = propBookings.find(b => {
+                    let cIn = new Date(b.check_in); cIn.setHours(0,0,0,0);
+                    let cOut = new Date(b.check_out); cOut.setHours(0,0,0,0);
+                    return checkDate >= cIn && checkDate < cOut;
+                });
+
+                let statusClass = "";
+                let isMaintenance = false;
+                if (bookingFound) {
+                    isMaintenance = bookingFound.booking_status && bookingFound.booking_status.includes('Maintenance');
+                    if (isMaintenance) {
+                        statusClass = 'booked-maintenance';
+                    } else {
+                        statusClass = (bookingFound.payment_status || '').toLowerCase() === 'paid' ? 'booked' : 'booked-pending';
+                    }
+                }
+                
+                let todayClass = (checkDate.getTime() === today.getTime()) ? 'today' : '';
+
+                html += `
+                    <div class="calendar-day ${statusClass} ${todayClass}" 
+                         title="${bookingFound ? bookingFound.customer_name : 'Click to book'}"
+                         onclick="${!bookingFound ? `openAddModal('${prop.name}', ${roomNum}, ${day}, ${calCurrentMonth}, ${calCurrentYear})` : ''}">
+                        ${day}
+                        ${bookingFound ? '<div class="booking-dot"></div>' : ''}
+                    </div>
+                `;
+            }
+
+            html += `</div></div>`;
+            
+            // --- ADDING THE MONTHLY REPORT BELOW CALENDAR ---
+            html += `
+                <div class="data-table-container" style="margin-top: 30px; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0;">
+                    <div class="table-header" style="background: #f8fafc; padding: 20px 25px;">
+                        <h3 style="margin:0; font-size: 1.1rem; font-weight: 700;">April Booking Report</h3>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead style="background: #f1f5f9;">
+                            <tr>
+                                <th style="padding: 12px 20px; text-align: left; font-size: 0.8rem; color: #64748b; text-transform: uppercase;">Guest Name</th>
+                                <th style="padding: 12px 20px; text-align: left; font-size: 0.8rem; color: #64748b; text-transform: uppercase;">Dates</th>
+                                <th style="padding: 12px 20px; text-align: left; font-size: 0.8rem; color: #64748b; text-transform: uppercase;">Total</th>
+                                <th style="padding: 12px 20px; text-align: left; font-size: 0.8rem; color: #64748b; text-transform: uppercase;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            if (propBookings.length === 0) {
+                html += `<tr><td colspan="4" style="padding: 40px; text-align: center; color: #94a3b8;">No bookings found for this month.</td></tr>`;
+            } else {
+                propBookings.forEach(b => {
+                    const statusClass = (b.payment_status || '').toLowerCase() === 'paid' ? 'status-confirmed' : 'status-pending';
+                    html += `
+                        <tr style="border-top: 1px solid #f1f5f9;">
+                            <td style="padding: 15px 20px;">
+                                <div style="font-weight: 600;">${b.customer_name}</div>
+                                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #64748b;">
+                                    ${b.customer_phone || ''}
+                                    ${b.customer_phone ? `
+                                        <a href="https://wa.me/${b.customer_phone.replace(/\D/g,'')}" target="_blank" title="Chat on WhatsApp" style="color: #25d366; font-size: 1rem; text-decoration: none;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                              <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.061 3.966L0 16l4.137-1.086a7.863 7.863 0 0 0 3.856.996h.003c4.367 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                                            </svg>
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </td>
+                            <td style="padding: 15px 20px; font-size: 0.9rem;">
+                                ${b.check_in} <span style="color:#94a3b8;">→</span> ${b.check_out}
+                            </td>
+                            <td style="padding: 15px 20px; font-weight: 700;">£${b.total_price}</td>
+                            <td style="padding: 15px 20px;">
+                                <span class="status-badge ${statusClass}">${b.payment_status}</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            root.innerHTML = html;
+        }
+
+        function exportToExcel() {
+            let filteredData = globalBookings;
+            let fileName = "WilmerHouse_Master_Sheet.xlsx";
+
+            // If a specific property/room is selected in Calendar View
+            if (calState === 'calendar' && calSelectedProp) {
+                filteredData = globalBookings.filter(b => 
+                    b.property_name === calSelectedProp.name && 
+                    (parseInt(b.room_number) === parseInt(calSelectedRoom))
+                );
+                fileName = `Report_${calSelectedProp.name}_Room${calSelectedRoom}.xlsx`;
+            } else if (calState === 'rooms' && calSelectedProp) {
+                filteredData = globalBookings.filter(b => b.property_name === calSelectedProp.name);
+                fileName = `Report_${calSelectedProp.name}_AllRooms.xlsx`;
+            }
+
+            const data = filteredData.map(b => ({
+                'ID (Don\'t Modify)': b.id,
+                'Property Name': b.property_name,
+                'Room Number': b.room_number || 1,
+                'Customer Name': b.customer_name,
+                'Check-in (YYYY-MM-DD)': b.check_in,
+                'Check-out (YYYY-MM-DD)': b.check_out,
+                'Email': b.customer_email || '',
+                'Phone': b.customer_phone || '',
+                'Total Price': b.total_price || 0,
+                'Payment Status': b.payment_status || 'Pending',
+                'Booking Status': b.booking_status ? b.booking_status.split('|').pop().trim() : 'Confirmed'
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Bookings");
+            XLSX.writeFile(wb, fileName);
+        }
+
+        async function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                if (jsonData.length === 0) {
+                    alert("Excel file is empty!");
+                    return;
+                }
+
+                if (!confirm(`Found ${jsonData.length} bookings. Process import now?`)) return;
+
+                const processedData = jsonData.map(row => {
+                    // Excel dates can sometimes be numbers (serial dates)
+                    const parseDate = (val) => {
+                        if (typeof val === 'number') {
+                            return new Date((val - (25567 + 2)) * 86400 * 1000).toISOString().split('T')[0];
+                        }
+                        return val;
+                    };
+
+                    const rNum = row['Room Number'] || 1;
+                    const bStatus = row['Booking Status'] || 'Confirmed';
+
+                    const booking = {
+                        property_name: row['Property Name'],
+                        // We store room number as a prefix in booking_status to avoid DB schema errors
+                        booking_status: `Room:${rNum} | ${bStatus}`,
+                        customer_name: row['Customer Name'],
+                        check_in: parseDate(row['Check-in (YYYY-MM-DD)']),
+                        check_out: parseDate(row['Check-out (YYYY-MM-DD)']),
+                        customer_email: row['Email'],
+                        customer_phone: row['Phone'],
+                        total_price: parseFloat(row['Total Price'] || 0),
+                        payment_status: row['Payment Status']
+                    };
+
+                    // If it has an ID, we update, otherwise insert
+                    if (row["ID (Don't Modify)"]) {
+                        booking.id = row["ID (Don't Modify)"];
+                    }
+                    
+                    return booking;
+                });
+
+                await performBulkUpsert(processedData);
+            };
+            reader.readAsArrayBuffer(file);
+            event.target.value = ''; // Reset input
+        }
+
+        async function performBulkUpsert(bookings) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify(bookings)
+                });
+
+                if (response.ok) {
+                    alert("Successfully synced bookings with database!");
+                    fetchData();
+                    if (calState !== 'properties') fetchCalendarData();
+                } else {
+                    const err = await response.json();
+                    alert("Sync failed: " + (err.message || "Invalid data format"));
+                }
+            } catch (error) {
+                alert("Network error during sync.");
+                console.error(error);
+            }
+        }
+
+        function exportToPDF() {
+            let filteredData = globalBookings;
+            let reportTitle = "Wilmer House - All Bookings Report";
+
+            if (calState === 'calendar' && calSelectedProp) {
+                filteredData = globalBookings.filter(b => 
+                    b.property_name === calSelectedProp.name && 
+                    (parseInt(b.room_number) === parseInt(calSelectedRoom))
+                );
+                reportTitle = `Report: ${calSelectedProp.name} | Room ${calSelectedRoom}`;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'pt', 'a4');
+            
+            doc.setFontSize(20);
+            doc.setTextColor(30, 41, 59); // Slate-800
+            doc.text(reportTitle, 40, 50);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100, 116, 139); // Slate-500
+            doc.text("Generated on: " + new Date().toLocaleString(), 40, 70);
+            doc.text("Total Records: " + filteredData.length, 40, 85);
+
+            const rows = filteredData.map(b => [
+                new Date(b.created_at).toLocaleDateString(),
+                b.property_name,
+                `Room ${b.room_number || (b.booking_status && b.booking_status.includes('Room:') ? b.booking_status.split('|')[0].replace('Room:', '').trim() : '1')}`,
+                b.customer_name,
+                b.check_in,
+                b.check_out,
+                '£' + b.total_price,
+                b.payment_status
+            ]);
+
+            doc.autoTable({
+                head: [['Date', 'Property', 'Room', 'Customer', 'Check-in', 'Check-out', 'Total', 'Status']],
+                body: rows,
+                startY: 110,
+                theme: 'grid',
+                headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold' },
+                styles: { fontSize: 9, cellPadding: 8 },
+                alternateRowStyles: { fillColor: [248, 250, 252] }
+            });
+
+            const safeName = reportTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            doc.save(`WilmerHouse_${safeName}.pdf`);
+        }
+
+        function handleAction(id, action) {
+            if (action === 'edit') {
+                openEditModal(id);
+            } else if (action === 'paid' || action === 'cancelled') {
+                updateBookingStatus(id, action);
+            }
+        }
+
+        function findAvailability() {
+            const start = document.getElementById('search-checkin').value;
+            const end = document.getElementById('search-checkout').value;
+
+            if (!start || !end) {
+                alert("Please select both Check-in and Check-out dates.");
+                return;
+            }
+
+            const startDate = new Date(start); startDate.setHours(0,0,0,0);
+            const endDate = new Date(end); endDate.setHours(0,0,0,0);
+
+            if (endDate <= startDate) {
+                alert("Check-out date must be after Check-in date.");
+                return;
+            }
+
+            let resultsHtml = `<div style="margin-bottom: 20px; font-weight: 600; color: #64748b;">Searching from ${start} to ${end}...</div>`;
+            let availableCount = 0;
+
+            globalProperties.forEach(prop => {
+                let propResults = [];
+                const roomCount = 4; // Default room count
+
+                for (let r = 1; r <= roomCount; r++) {
+                    const isBooked = globalBookings.some(b => {
+                        if (b.property_name !== prop.name) return false;
+                        
+                        // Check if room matches
+                        let bRoom = b.room_number;
+                        if (!bRoom && b.booking_status && b.booking_status.includes('Room:')) {
+                            bRoom = b.booking_status.split('|')[0].replace('Room:', '').trim();
+                        }
+                        if (parseInt(bRoom || 1) !== r) return false;
+
+                        const bStart = new Date(b.check_in); bStart.setHours(0,0,0,0);
+                        const bEnd = new Date(b.check_out); bEnd.setHours(0,0,0,0);
+
+                        // Overlap logic: (start1 < end2) && (end1 > start2)
+                        return (startDate < bEnd) && (endDate > bStart);
+                    });
+
+                    if (!isBooked) {
+                        propResults.push(r);
+                        availableCount++;
+                    }
+                }
+
+                if (propResults.length > 0) {
+                    resultsHtml += `
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
+                            <div style="font-weight: 800; font-size: 1.1rem; color: #1e293b; margin-bottom: 10px;">${prop.name}</div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                ${propResults.map(r => `
+                                    <button onclick="quickBookFromSearch('${prop.name}', ${r}, '${start}', '${end}')" 
+                                            class="btn-premium" style="background: #fff; border: 1.5px solid #3b82f6; color: #3b82f6; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: 700;">
+                                        Room ${r} - £${prop[`room${r}_price`] || prop.full_property_price}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            if (availableCount === 0) {
+                resultsHtml = `<div style="padding: 40px; text-align: center; color: #94a3b8;">Sorry, no rooms are available for these dates.</div>`;
+            }
+
+            document.getElementById('availability-results').innerHTML = resultsHtml;
+            document.getElementById('availability-modal').classList.add('open');
+        }
+
+        function closeAvailabilityModal() {
+            document.getElementById('availability-modal').classList.remove('open');
+        }
+
+        function quickBookFromSearch(propName, roomNum, start, end) {
+            closeAvailabilityModal();
+            // Reuse existing openAddModal logic but with search dates
+            const d = new Date(start);
+            openAddModal(propName, roomNum, d.getDate(), d.getMonth(), d.getFullYear());
+            // Adjust dates precisely
+            document.getElementById('add-checkin').value = start;
+            document.getElementById('add-checkout').value = end;
+        }
+
+        function openAddModal(propName, roomNum, day, month, year) {
+            const checkIn = new Date(year, month, day + 1).toISOString().split('T')[0];
+            const checkOut = new Date(year, month, day + 2).toISOString().split('T')[0];
+            
+            document.getElementById('add-property').value = propName;
+            document.getElementById('add-room').value = roomNum;
+            document.getElementById('add-checkin').value = checkIn;
+            document.getElementById('add-checkout').value = checkOut;
+            document.getElementById('add-name').value = '';
+            document.getElementById('add-email').value = '';
+            document.getElementById('add-phone').value = '';
+            
+            // Default price logic
+            const prop = globalProperties.find(p => p.name === propName);
+            document.getElementById('add-price').value = prop ? (prop[`room${roomNum}_price`] || 50) : 50;
+
+            document.getElementById('add-modal').classList.add('open');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').classList.remove('open');
+        }
+
+        function toggleMaintenanceMode(val) {
+            const nameField = document.getElementById('add-name');
+            const priceField = document.getElementById('add-price');
+            if (val === 'maintenance') {
+                nameField.value = "Room Maintenance";
+                nameField.readOnly = true;
+                priceField.value = 0;
+            } else {
+                nameField.value = "";
+                nameField.readOnly = false;
+            }
+        }
+
+        async function submitAddBooking(event) {
+            event.preventDefault();
+            const btn = event.target.querySelector('.edit-btn-save');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            const rNum = document.getElementById('add-room').value;
+            const bType = document.getElementById('add-type').value;
+            const bStatus = bType === 'maintenance' ? 'Maintenance' : 'Confirmed';
+
+            const newBooking = {
+                property_name: document.getElementById('add-property').value,
+                customer_name: document.getElementById('add-name').value,
+                check_in: document.getElementById('add-checkin').value,
+                check_out: document.getElementById('add-checkout').value,
+                customer_email: document.getElementById('add-email').value || '',
+                customer_phone: document.getElementById('add-phone').value || '',
+                total_price: parseFloat(document.getElementById('add-price').value || 0),
+                payment_status: bType === 'maintenance' ? 'N/A' : 'Paid',
+                booking_status: `Room:${rNum} | ${bStatus}`
+            };
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify([newBooking])
+                });
+
+                if (response.ok) {
+                    alert("Booking added successfully!");
+                    closeAddModal();
+                    fetchData();
+                    fetchCalendarData();
+                } else {
+                    throw new Error("Failed to save booking");
+                }
+            } catch (error) {
+                alert("Error adding booking.");
+                console.error(error);
+            } finally {
+                btn.textContent = 'Save Booking';
+                btn.disabled = false;
+            }
+        }
+
+        function openEditModal(id) {
+            const b = globalBookings.find(x => x.id == id);
+            if (!b) return;
+            
+            document.getElementById('edit-id').value = b.id;
+            document.getElementById('edit-property').value = b.property_name || 'Property 1';
+            document.getElementById('edit-name').value = b.customer_name || '';
+            document.getElementById('edit-checkin').value = b.check_in || '';
+            document.getElementById('edit-checkout').value = b.check_out || '';
+            document.getElementById('edit-email').value = b.customer_email || '';
+            document.getElementById('edit-phone').value = b.customer_phone || '';
+            document.getElementById('edit-price').value = b.total_price || 0;
+            
+            document.getElementById('edit-modal').classList.add('open');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.remove('open');
+        }
+
+        async function submitEditBooking(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('edit-id').value;
+            const updateData = {
+                property_name: document.getElementById('edit-property').value,
+                customer_name: document.getElementById('edit-name').value,
+                check_in: document.getElementById('edit-checkin').value,
+                check_out: document.getElementById('edit-checkout').value,
+                customer_email: document.getElementById('edit-email').value,
+                customer_phone: document.getElementById('edit-phone').value,
+                total_price: parseFloat(document.getElementById('edit-price').value)
+            };
+
+            const btn = document.querySelector('.edit-btn-save');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings?id=eq.${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (response.ok) {
+                    alert("Booking updated successfully!");
+                    closeEditModal();
+                    fetchData(); // Refresh tables
+                    if (document.getElementById('view-calendar').style.display === 'block') {
+                        fetchCalendarData();
+                    }
+                } else {
+                    throw new Error("Update failed");
+                }
+            } catch (error) {
+                alert("Failed to update booking.");
+                console.error(error);
+            } finally {
+                btn.textContent = 'Save Changes';
+                btn.disabled = false;
+            }
+        }
+
+        async function seedSampleData() {
+            if(!confirm("Add 4 sample properties to the database?")) return;
+            const btn = document.getElementById('seed-btn');
+            btn.textContent = "Seeding...";
+            btn.disabled = true;
+
+            const samples = [
+                { name: "Stree-20", location: "Eastleigh, UK", full_property_price: 240, room1_price: 60, room2_price: 60, room3_price: 60, room4_price: 60, is_active: true, description: "4BHK Property" },
+                { name: "Cable Street", location: "Southampton, UK", full_property_price: 150, room1_price: 50, room2_price: 50, room3_price: 50, room4_price: null, is_active: true, description: "3BHK Property" },
+                { name: "Street 22", location: "Winchester, UK", full_property_price: 280, room1_price: 70, room2_price: 70, room3_price: 70, room4_price: 70, is_active: true, description: "4BHK Property" },
+                { name: "Flat", location: "London, UK", full_property_price: 200, room1_price: 100, room2_price: 100, room3_price: null, room4_price: null, is_active: true, description: "2BHK Property" }
+            ];
+
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/properties`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(samples)
+                });
+                if(res.ok) {
+                    alert("Sample properties added successfully!");
+                    fetchCalendarData();
+                } else {
+                    const err = await res.json();
+                    alert("Failed to seed: " + (err.message || "Unknown error"));
+                }
+            } catch(e) {
+                alert("Error: " + e.message);
+            } finally {
+                btn.textContent = "✨ Seed Sample Data";
+                btn.disabled = false;
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            
+            // Update toggle icon
+            const btn = document.querySelector('.toggle-sidebar-btn');
+            btn.textContent = sidebar.classList.contains('collapsed') ? '➔' : '☰';
+        }
+
+        function generateTestExcelData() {
+            const testData = [
+                // APRIL 2026 (Past/Current - To test Collection)
+                { "ID (Don't Modify)": "", "Property Name": "Stree-20", "Room Number": 1, "Customer Name": "Rahul Room 1", "Check-in (YYYY-MM-DD)": "2026-04-05", "Check-out (YYYY-MM-DD)": "2026-04-10", "Email": "rahul@test.com", "Phone": "123", "Total Price": 300, "Payment Status": "Paid", "Booking Status": "Confirmed" },
+                { "ID (Don't Modify)": "", "Property Name": "Stree-20", "Room Number": 2, "Customer Name": "Amit Room 2", "Check-in (YYYY-MM-DD)": "2026-04-05", "Check-out (YYYY-MM-DD)": "2026-04-10", "Email": "amit@test.com", "Phone": "444", "Total Price": 300, "Payment Status": "Paid", "Booking Status": "Confirmed" },
+                { "ID (Don't Modify)": "", "Property Name": "Cable Street", "Room Number": 1, "Customer Name": "Sonia Room 1", "Check-in (YYYY-MM-DD)": "2026-04-12", "Check-out (YYYY-MM-DD)": "2026-04-15", "Email": "sonia@test.com", "Phone": "456", "Total Price": 150, "Payment Status": "Paid", "Booking Status": "Confirmed" },
+                { "ID (Don't Modify)": "", "Property Name": "Street 22", "Room Number": 3, "Customer Name": "Vikram Room 3", "Check-in (YYYY-MM-DD)": "2026-04-20", "Check-out (YYYY-MM-DD)": "2026-04-25", "Email": "vikram@test.com", "Phone": "789", "Total Price": 350, "Payment Status": "Paid", "Booking Status": "Confirmed" },
+                
+                // MAY 2026 (Current - To test Calendar)
+                { "ID (Don't Modify)": "", "Property Name": "Stree-20", "Room Number": 1, "Customer Name": "John May Room 1", "Check-in (YYYY-MM-DD)": "2026-05-05", "Check-out (YYYY-MM-DD)": "2026-05-08", "Email": "john@test.com", "Phone": "111", "Total Price": 180, "Payment Status": "Paid", "Booking Status": "Confirmed" },
+                { "ID (Don't Modify)": "", "Property Name": "Cable Street", "Room Number": 2, "Customer Name": "Sara May Room 2", "Check-in (YYYY-MM-DD)": "2026-05-12", "Check-out (YYYY-MM-DD)": "2026-05-14", "Email": "sara@test.com", "Phone": "222", "Total Price": 100, "Payment Status": "Pending", "Booking Status": "Confirmed" },
+                { "ID (Don't Modify)": "", "Property Name": "Street 22", "Room Number": 4, "Customer Name": "Mike May Room 4", "Check-in (YYYY-MM-DD)": "2026-05-18", "Check-out (YYYY-MM-DD)": "2026-05-22", "Email": "mike@test.com", "Phone": "333", "Total Price": 280, "Payment Status": "Paid", "Booking Status": "Confirmed" },
+                { "ID (Don't Modify)": "", "Property Name": "Flat", "Room Number": 1, "Customer Name": "Priya May Room 1", "Check-in (YYYY-MM-DD)": "2026-05-25", "Check-out (YYYY-MM-DD)": "2026-05-27", "Email": "priya@test.com", "Phone": "444", "Total Price": 200, "Payment Status": "Pending", "Booking Status": "Confirmed" }
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(testData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Test_Data");
+            XLSX.writeFile(wb, "WilmerHouse_Test_Template.xlsx");
+            alert("Updated Test Template Downloaded! Now each booking is assigned to a specific Room.");
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
