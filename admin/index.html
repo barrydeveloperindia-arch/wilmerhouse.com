@@ -219,9 +219,12 @@
                     <input type="hidden" id="edit-id">
                     
                     <div class="edit-form-group">
-                    <div class="edit-form-group">
                         <label>Property</label>
                         <input type="text" id="edit-property" readonly style="background:#f1f5f9;">
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Staff Name (Managed by)</label>
+                        <input type="text" id="edit-staff" placeholder="Who updated this booking?">
                     </div>
                     <div class="edit-form-group">
                         <label>Guest Name</label>
@@ -286,6 +289,10 @@
                             <option value="guest">Guest Booking</option>
                             <option value="maintenance">Room Maintenance</option>
                         </select>
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Staff Name (Booked By)</label>
+                        <input type="text" id="add-staff" placeholder="Enter your name">
                     </div>
                     <div class="edit-form-group" id="guest-name-group">
                         <label>Guest Name</label>
@@ -1413,6 +1420,7 @@
             document.getElementById('add-name').value = '';
             document.getElementById('add-email').value = '';
             document.getElementById('add-phone').value = '';
+            document.getElementById('add-staff').value = '';
             
             // Default price logic
             const prop = globalProperties.find(p => p.name === propName);
@@ -1457,7 +1465,7 @@
                 customer_phone: document.getElementById('add-phone').value || '',
                 total_price: parseFloat(document.getElementById('add-price').value || 0),
                 payment_status: bType === 'maintenance' ? 'N/A' : 'Paid',
-                booking_status: `Room:${rNum} | ${bStatus}`
+                booking_status: `Room:${rNum} | Staff:${document.getElementById('add-staff').value || 'System'} | ${bStatus}`
             };
 
             try {
@@ -1501,6 +1509,13 @@
             document.getElementById('edit-phone').value = b.customer_phone || '';
             document.getElementById('edit-price').value = b.total_price || 0;
             
+            // Extract staff name from booking_status if present
+            let staffName = 'Admin';
+            if (b.booking_status && b.booking_status.includes('Staff:')) {
+                staffName = b.booking_status.split('Staff:')[1].split('|')[0].trim();
+            }
+            document.getElementById('edit-staff').value = staffName;
+            
             document.getElementById('edit-modal').classList.add('open');
         }
 
@@ -1512,6 +1527,11 @@
             event.preventDefault();
             
             const id = document.getElementById('edit-id').value;
+            const oldBooking = globalBookings.find(x => x.id == id);
+            const rNumMatch = oldBooking.booking_status ? oldBooking.booking_status.match(/Room:(\d+)/) : null;
+            const rNum = rNumMatch ? rNumMatch[1] : '1';
+            const bStatus = oldBooking.booking_status ? (oldBooking.booking_status.includes('Maintenance') ? 'Maintenance' : 'Confirmed') : 'Confirmed';
+
             const updateData = {
                 property_name: document.getElementById('edit-property').value,
                 customer_name: document.getElementById('edit-name').value,
@@ -1519,7 +1539,8 @@
                 check_out: document.getElementById('edit-checkout').value,
                 customer_email: document.getElementById('edit-email').value,
                 customer_phone: document.getElementById('edit-phone').value,
-                total_price: parseFloat(document.getElementById('edit-price').value)
+                total_price: parseFloat(document.getElementById('edit-price').value),
+                booking_status: `Room:${rNum} | Staff:${document.getElementById('edit-staff').value || 'System'} | ${bStatus}`
             };
 
             const btn = document.querySelector('.edit-btn-save');
