@@ -219,20 +219,15 @@
                     <input type="hidden" id="edit-id">
                     
                     <div class="edit-form-group">
-                        <label>Property</label>
-                        <select id="edit-property" required>
-                            <option value="Property 1">Property 1</option>
-                            <option value="Property 2">Property 2</option>
-                            <option value="Property 3">Property 3</option>
-                            <option value="Property 4">Property 4</option>
-                        </select>
-                    </div>
-
                     <div class="edit-form-group">
-                        <label>Customer Name</label>
+                        <label>Property</label>
+                        <input type="text" id="edit-property" readonly style="background:#f1f5f9;">
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Guest Name</label>
                         <input type="text" id="edit-name" required>
                     </div>
-
+                    
                     <div class="edit-form-group" style="display: flex; gap: 12px;">
                         <div style="flex: 1;">
                             <label>Check-in</label>
@@ -275,8 +270,8 @@
                 <h2>New Booking</h2>
                 <button onclick="closeAddModal()" style="background:none; border:none; color:#64748b; cursor:pointer; font-size:1.2rem;">✕</button>
             </div>
-            <form id="add-booking-form" onsubmit="submitAddBooking(event)">
-                <div class="edit-modal-body">
+            <div class="edit-modal-body">
+                <form id="add-booking-form" onsubmit="submitAddBooking(event)">
                     <div class="edit-form-group">
                         <label>Property</label>
                         <input type="text" id="add-property" readonly style="background:#f1f5f9;">
@@ -320,12 +315,12 @@
                         <label>Total Price (£)</label>
                         <input type="number" id="add-price" required step="0.01">
                     </div>
-                </div>
-                <div class="edit-modal-footer">
-                    <button type="button" onclick="closeAddModal()" class="edit-btn-cancel">Cancel</button>
-                    <button type="submit" class="edit-btn-save">Save Booking</button>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="edit-modal-footer">
+                <button type="button" onclick="closeAddModal()" class="edit-btn-cancel">Cancel</button>
+                <button type="submit" form="add-booking-form" class="edit-btn-save">Save Booking</button>
+            </div>
         </div>
     </div>
     
