@@ -1109,10 +1109,18 @@
             } else {
                 propBookings.forEach(b => {
                     const statusClass = (b.payment_status || '').toLowerCase() === 'paid' ? 'status-confirmed' : 'status-pending';
+                    
+                    // Extract staff name from booking_status
+                    let staffName = 'Online/System';
+                    if (b.booking_status && b.booking_status.includes('Staff:')) {
+                        staffName = b.booking_status.split('Staff:')[1].split('|')[0].trim();
+                    }
+
                     html += `
                         <tr style="border-top: 1px solid #f1f5f9;">
                             <td style="padding: 15px 20px;">
                                 <div style="font-weight: 600;">${b.customer_name}</div>
+                                <div style="font-size: 0.7rem; color: #94a3b8; margin-bottom: 4px;">Booked by: ${staffName}</div>
                                 <div style="display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #64748b;">
                                     ${b.customer_phone || ''}
                                     ${b.customer_phone ? `
@@ -1160,19 +1168,27 @@
                 fileName = `Report_${calSelectedProp.name}_AllRooms.xlsx`;
             }
 
-            const data = filteredData.map(b => ({
-                'ID (Don\'t Modify)': b.id,
-                'Property Name': b.property_name,
-                'Room Number': b.room_number || 1,
-                'Customer Name': b.customer_name,
-                'Check-in (YYYY-MM-DD)': b.check_in,
-                'Check-out (YYYY-MM-DD)': b.check_out,
-                'Email': b.customer_email || '',
-                'Phone': b.customer_phone || '',
-                'Total Price': b.total_price || 0,
-                'Payment Status': b.payment_status || 'Pending',
-                'Booking Status': b.booking_status ? b.booking_status.split('|').pop().trim() : 'Confirmed'
-            }));
+            const data = filteredData.map(b => {
+                let staffName = 'Online/System';
+                if (b.booking_status && b.booking_status.includes('Staff:')) {
+                    staffName = b.booking_status.split('Staff:')[1].split('|')[0].trim();
+                }
+                
+                return {
+                    'ID (Don\'t Modify)': b.id,
+                    'Property Name': b.property_name,
+                    'Room Number': b.room_number || 1,
+                    'Booked By (Staff)': staffName,
+                    'Customer Name': b.customer_name,
+                    'Check-in (YYYY-MM-DD)': b.check_in,
+                    'Check-out (YYYY-MM-DD)': b.check_out,
+                    'Email': b.customer_email || '',
+                    'Phone': b.customer_phone || '',
+                    'Total Price': b.total_price || 0,
+                    'Payment Status': b.payment_status || 'Pending',
+                    'Booking Status': b.booking_status ? b.booking_status.split('|').pop().trim() : 'Confirmed'
+                };
+            });
             
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
