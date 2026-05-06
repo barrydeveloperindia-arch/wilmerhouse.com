@@ -491,12 +491,19 @@
                 const isCash = b.booking_status && b.booking_status.includes('Arrival');
                 const cashTag = isCash ? '<br><span style="font-size:10px; color:#64748b; margin-top:4px; display:inline-block;">Pay on Arrival</span>' : '';
 
+                // Extract staff name
+                let staffName = 'Online/System';
+                if (b.booking_status && b.booking_status.includes('Staff:')) {
+                    staffName = b.booking_status.split('Staff:')[1].split('|')[0].trim();
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-size:0.85rem; color:#64748b;">${bookingDate}</td>
                     <td><strong>${b.property_name || 'N/A'}</strong></td>
                     <td>
                         <strong>${b.customer_name}</strong><br>
+                        <span style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:4px;">Booked by: ${staffName}</span>
                         <span style="font-size:0.8rem; color:#64748b;">📧 ${b.customer_email || 'N/A'}</span><br>
                         <span style="font-size:0.8rem; color:#64748b;">📞 ${b.customer_phone || 'N/A'}</span>
                     </td>
@@ -544,12 +551,19 @@
                 const isCash = b.booking_status && b.booking_status.includes('Arrival');
                 const cashTag = isCash ? '<br><span style="font-size:10px; color:#64748b; margin-top:4px; display:inline-block;">Pay on Arrival</span>' : '';
 
+                // Extract staff name
+                let staffName = 'Online/System';
+                if (b.booking_status && b.booking_status.includes('Staff:')) {
+                    staffName = b.booking_status.split('Staff:')[1].split('|')[0].trim();
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-size:0.85rem; color:#64748b;">${bookingDate}</td>
                     <td><strong>${b.property_name || 'N/A'}</strong></td>
                     <td>
                         <strong>${b.customer_name}</strong><br>
+                        <span style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:4px;">Booked by: ${staffName}</span>
                         <span style="font-size:0.8rem; color:#64748b;">📧 ${b.customer_email || 'N/A'}</span><br>
                         <span style="font-size:0.8rem; color:#64748b;">📞 ${b.customer_phone || 'N/A'}</span>
                     </td>
